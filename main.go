@@ -18,6 +18,7 @@ func main() {
 	mainPath0.Commands["left"] = func(s *state) {
 		fmt.Println("You Turn Left")
 		s.room = mRoom
+		s.hiddenCommands["Mausoleum/go through tunnel"] = struct{}{}
 	}
 	mainPath0.Commands["forward"] = func(s *state) {
 		fmt.Println("You Move forward")
@@ -44,6 +45,10 @@ func main() {
 		fmt.Println("You go back")
 		s.room = mainPath0
 	}
+	mainPath2.Commands["forwards"] = func(s *state) {
+		fmt.Println("You continue walking")
+		s.room = mainPath3
+	}
 
 	gTRoom.Commands["back"] = func(s *state) {
 		fmt.Println("You go back")
@@ -54,7 +59,46 @@ func main() {
 		s.Safecodegot = true
 		s.hiddenCommands["Guard Tower/pick up safe code"] = struct{}{}
 	}
-
+	mainPath3.Commands["back"] = func(s *state) {
+		fmt.Println("You go back")
+		s.room = mainPath2
+	}
+	mainPath3.Commands["left"] = func(s *state) {
+		fmt.Println("You go left")
+		s.room = maroom
+	}
+	mainPath3.Commands["right"] = func(s *state) {
+		fmt.Println("You go right")
+		s.room = gRoom
+	}
+	gRoom.Commands["turn on power"] = func(s *state) {
+		fmt.Println("You turn on the power")
+		s.electricityon = true
+		s.hiddenCommands["Generator/turn on power"] = struct{}{}
+	}
+	gRoom.Commands["back"] = func(s *state) {
+		fmt.Println("You turn back")
+		s.room = mainPath3
+	}
+	maroom.Commands["back"] = func(s *state) {
+		fmt.Println("You turn back")
+		s.room = mainPath3
+	}
+	mRoom.Commands["go through tunnel"] = func(s *state) {
+		fmt.Println("You go through the tunnel")
+		s.room = mABRoom
+	}
+	mABRoom.Commands["pull lever"] = func(s *state) {
+		fmt.Println("You pull the lever and rocks fall into a pit in the center of the room")
+		s.room = mABRoom
+		s.rocksFallen = true
+		s.hiddenCommands["Basement/pull lever"] = struct{}{}
+	}
+	mABRoom.Commands["back"] = func(s *state) {
+		fmt.Println("You go back to the mausoleum")
+		s.room = mRoom
+		s.hiddenCommands["Mausoleum/go through tunnel"] = struct{}{}
+	}
 	s := &state{
 		room:           startRoom,
 		hiddenCommands: map[string]struct{}{},
@@ -105,6 +149,7 @@ func renderRoom(r *room, s *state) {
 	fmt.Println()
 	fmt.Println("Available Commands:")
 	fmt.Println(strings.Join(getCommands(r.Commands, s), "|"))
+	fmt.Println()
 }
 
 func commandIsHidden(cmd string, s *state) bool {
@@ -159,8 +204,10 @@ var mRoom = &room{
 	StateDesc: func(s *state) string {
 		general := "You turn left and walk along the path towards a building that looks like a mausoleum. You look around yourself and notice graves, all over the floor some with bones still half sticking out. You begin to wonder what you got yourself into as you approach the Mausoleum.\n"
 		if s.hammergot == true {
-			return general + "There used to be a hammer on the floor, but you picked it up."
+			delete(s.hiddenCommands, "Mausoleum/go through tunnel")
+			return general + "There used to be a hammer on the floor, but you picked it up. There is also now a tunnel that you can go through."
 		}
+
 		return general + "There is a hammer on the floor."
 	},
 }
@@ -184,5 +231,55 @@ var gTRoom = &room{
 		}
 
 		return general + ". The Door is locked, it requires electricity to function"
+	},
+}
+var mainPath3 = &room{
+	Title:    "Path",
+	Desc:     "You walk to the next intersection on the path and notice a Mansion on your left, and a power generator on your right.",
+	Commands: map[string]action{},
+}
+var maroom = &room{
+	Title:    "Mantion",
+	Commands: map[string]action{},
+	StateDesc: func(s *state) string {
+		general := "You Enter the mantion and see"
+		if s.rocksFallen == true && s.Safecodegot == true && s.hammergot == true {
+			delete(s.hiddenCommands, "Mantion/Grab Key")
+			return general + " A key guarded by a safe. You smash the glass, unlock the safe with the code and see a key to the exit"
+		}
+		if s.rocksFallen == true {
+			if s.hammergot {
+				return general + " A safe guarded by a sheet of glass. You smash the glass using a hammer to reveal a safe with a code."
+			}
+			return general + " A safe guarded by a sheet of glass. A hammer could be useful."
+		}
+		
+		return general + " A pile of rocks with a trapdoor underneeth."
+	},
+}
+var gRoom = &room{
+	Title:    "Generator",
+	Commands: map[string]action{},
+	StateDesc: func(s *state) string {
+		general := "You enter the room with the power generator, the switch on the wall controlling the power output is set to "
+		if !s.electricityon {
+			delete(s.hiddenCommands, "Generator/Turn on power")
+			return general + "Off"
+		}
+
+		return general + "On"
+	},
+}
+var mABRoom = &room{
+	Title:    "Basement",
+	Commands: map[string]action{},
+	StateDesc: func(s *state) string {
+		general := "You crawl through the tunnel and reach the basement of the Mantion. There is a lever controlling a trapdoor in the floor above. The lever is "
+		if !s.rocksFallen {
+			delete(s.hiddenCommands, "Basement/Pull lever")
+			return general + "Not Pulled"
+		}
+
+		return general + "Pulled"
 	},
 }
