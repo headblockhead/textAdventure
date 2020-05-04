@@ -133,8 +133,9 @@ func main() {
 		s.room = mainpath5
 	}
 	s := &state{
-		room:           startRoom,
+		room:           titleRoom,
 		hiddenCommands: map[string]struct{}{},
+		Movestaken: 0,
 	}
 	reader := bufio.NewReader(os.Stdin)
 
@@ -144,6 +145,7 @@ func main() {
 		text, _ := reader.ReadString('\n')
 		action, ok := s.room.Commands[strings.TrimSpace(text)]
 		if ok && !commandIsHidden(strings.TrimSpace(text), s) {
+			s.Movestaken++
 			action(s)
 		} else {
 			fmt.Println()
@@ -153,6 +155,7 @@ func main() {
 }
 
 type state struct {
+	//game_data
 	room            *room
 	hammergot       bool
 	Safecodegot     bool
@@ -161,6 +164,9 @@ type state struct {
 	rocksFallen     bool
 	keyGot          bool
 	hiddenCommands  map[string]struct{}
+	//info_data
+	Movestaken int
+
 }
 
 type action func(s *state)
@@ -247,48 +253,48 @@ var mRoom = &room{
 }
 var mainPath2 = &room{
 	Title:    "Path",
-	Desc:     "You walk to the next intersection on the path and notice a guard tower to your right. You can continue walking foreward, or take the path to your right.",
+	Desc:     "You walk to the next intersection on the path and notice a prison guard tower to your right. It streaches far into the sky but has no staircase. You can continue walking forward, or take the path to your right.",
 	Commands: map[string]action{},
 }
 var gTRoom = &room{
 	Title:    "Guard Tower",
 	Commands: map[string]action{},
 	StateDesc: func(s *state) string {
-		general := "You Approach the guard tower"
+		general := "You walk towards the guard tower, the night falling around you, and see that"
 		if s.electricityon == true && s.breakerroomused == true {
 			delete(s.hiddenCommands, "Guard Tower/pick up safe code")
-			return general + ". The door is unlocked, You enter and find a metal block on the floor with a safe code sticking out of it"
+			return general + " the door is unlocked, You enter and find a metal block on the floor with a safe code sticking out of it"
 		}
 		if s.electricityon == true {
 
-			return general + ". The door is unlocked, You enter and find a metal block on the floor with a safe code sticking out of it. You cannot lift it as an electromagnet has it stuck to the floor"
+			return general + " the door is unlocked, You enter and find a metal block on the floor with a safe code sticking out of it. You cannot lift it as an electromagnet has it stuck to the floor"
 		}
 
-		return general + ". The Door is locked, it requires electricity to function"
+		return general + " the door is locked, it requires electricity to function"
 	},
 }
 var mainPath3 = &room{
 	Title:    "Path",
-	Desc:     "You walk to the next intersection on the path and notice a Mansion on your left, and a power generator on your right.",
+	Desc:     "You walk to the next intersection on the path and look around yourself. You look to your left and see an abandoned mansion, covered in winding vines. To your left you see a small house, Presumably where the generator is kept.",
 	Commands: map[string]action{},
 }
 var maroom = &room{
 	Title:    "Mansion",
 	Commands: map[string]action{},
 	StateDesc: func(s *state) string {
-		general := "You Enter the mansion and see"
+		general := "You walk along the short path, observing your surroundings. You notice the distant screams coming from the car that was chasing you. Shivers make their way down your spine as you peek inside the old building. Inside you notice"
 		if s.rocksFallen == true && s.Safecodegot == true && s.hammergot == true {
 			delete(s.hiddenCommands, "Mansion/grab key")
-			return general + " A key guarded by a safe. You smash the glass, unlock the safe with the code and see a key to the exit"
+			return general + " a key guarded by a safe. You smash the glass, unlock the safe with the code and see a key to the exit."
 		}
 		if s.rocksFallen == true {
 			if s.hammergot {
-				return general + " A safe guarded by a sheet of glass. You smash the glass using a hammer to reveal a safe with a code."
+				return general + " a safe guarded by a sheet of glass. You smash the glass using a hammer to reveal a safe with a code."
 			}
-			return general + " A safe guarded by a sheet of glass. A hammer could be useful."
+			return general + " a safe guarded by a sheet of glass. A hammer could be useful."
 		}
 
-		return general + " A pile of rocks with a trapdoor underneath."
+		return general + " a pile of rocks blocking your path."
 	},
 }
 var gRoom = &room{
@@ -298,10 +304,10 @@ var gRoom = &room{
 		general := "You enter the room with the power generator, the switch on the wall controlling the power output is set to "
 		if !s.electricityon {
 			delete(s.hiddenCommands, "Generator/turn on power")
-			return general + "Off"
+			return general + "off."
 		}
 
-		return general + "On"
+		return general + "on."
 	},
 }
 var mABRoom = &room{
@@ -311,10 +317,10 @@ var mABRoom = &room{
 		general := "You crawl through the tunnel and reach the basement of the Mansion. There is a lever controlling a trapdoor in the floor above. The lever is "
 		if !s.rocksFallen {
 			delete(s.hiddenCommands, "Basement/pull lever")
-			return general + "Not Pulled"
+			return general + "not pulled."
 		}
 
-		return general + "Pulled"
+		return general + "pulled."
 	},
 }
 
@@ -339,5 +345,21 @@ var bRoom = &room{
 			delete(s.hiddenCommands, "Breaker Room/switch off electromagnet")
 		}
 		return general
+	},
+}
+var titleRoom = &room{
+	Title: "Eddie's Text Adventure",
+	Desc:  "MENU",
+	Commands: map[string]action{
+		"quit": func(s *state) {
+			fmt.Println("\n You Quit the game.\n ")
+			os.Exit(1)
+		},
+		"start": func(s *state) {
+			s.room = startRoom
+		},
+		"load": func(s *state) {
+			
+		},
 	},
 }
