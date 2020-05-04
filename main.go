@@ -21,6 +21,7 @@ func main() {
 	}
 	mainPath0.Commands["forward"] = func(s *state) {
 		fmt.Println("You Move forward")
+		s.room = mainPath2
 	}
 
 	mRoom.Commands["backwards"] = func(s *state) {
@@ -33,11 +34,30 @@ func main() {
 		s.hiddenCommands["Mausoleum/pick up hammer"] = struct{}{}
 	}
 
+	mainPath2.Commands["right"] = func(s *state) {
+		fmt.Println("You Turn Right")
+		s.hiddenCommands["Guard Tower/pick up safe code"] = struct{}{}
+		s.room = gTRoom
+	}
+
+	mainPath2.Commands["back"] = func(s *state) {
+		fmt.Println("You go back")
+		s.room = mainPath0
+	}
+
+	gTRoom.Commands["back"] = func(s *state) {
+		fmt.Println("You go back")
+		s.room = mainPath2
+	}
+	gTRoom.Commands["pick up safe code"] = func(s *state) {
+		fmt.Println("You pick up the safe code")
+		s.Safecodegot = true
+		s.hiddenCommands["Guard Tower/pick up safe code"] = struct{}{}
+	}
+
 	s := &state{
-		room: startRoom,
-		hiddenCommands: map[string]struct{}{
-			"Road/hiddencom": {},
-		},
+		room:           startRoom,
+		hiddenCommands: map[string]struct{}{},
 	}
 	reader := bufio.NewReader(os.Stdin)
 
@@ -61,6 +81,7 @@ type state struct {
 	Safecodegot     bool
 	electricityon   bool
 	breakerroomused bool
+	rocksFallen     bool
 	hiddenCommands  map[string]struct{}
 }
 
@@ -141,5 +162,27 @@ var mRoom = &room{
 			return general + "There used to be a hammer on the floor, but you picked it up."
 		}
 		return general + "There is a hammer on the floor."
+	},
+}
+var mainPath2 = &room{
+	Title:    "Path",
+	Desc:     "You walk to the next intersection on the path and notice a guard tower to your right. You can continue walking foreward, or take the path to your right.",
+	Commands: map[string]action{},
+}
+var gTRoom = &room{
+	Title:    "Guard Tower",
+	Commands: map[string]action{},
+	StateDesc: func(s *state) string {
+		general := "You Approach the guard tower"
+		if s.electricityon == true && s.breakerroomused == true {
+			delete(s.hiddenCommands, "Guard Tower/pick up safe code")
+			return general + ". The door is unlocked, You enter and find a meatal block on the floor with a safe code sticking out of it"
+		}
+		if s.electricityon == true {
+
+			return general + ". The door is unlocked, You enter and find a meatal block on the floor with a safe code sticking out of it. You cannot lift it as an electromagnet has it stuck to the floor"
+		}
+
+		return general + ". The Door is locked, it requires electricity to function"
 	},
 }
