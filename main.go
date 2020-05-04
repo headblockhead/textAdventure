@@ -66,6 +66,7 @@ func main() {
 	mainPath3.Commands["left"] = func(s *state) {
 		fmt.Println("You go left")
 		s.room = maroom
+		s.hiddenCommands["Mantion/Grab key"] = struct{}{}
 	}
 	mainPath3.Commands["right"] = func(s *state) {
 		fmt.Println("You go right")
@@ -99,6 +100,37 @@ func main() {
 		s.room = mRoom
 		s.hiddenCommands["Mausoleum/go through tunnel"] = struct{}{}
 	}
+	mainPath3.Commands["forward"] = func(s *state) {
+		fmt.Println("You forward")
+		s.room = mainpath5
+		s.hiddenCommands["End of path/exit"] = struct{}{}
+	}
+	maroom.Commands["grab key"] = func(s *state) {
+		fmt.Println("You grab the key")
+		s.keyGot = true
+		s.hiddenCommands["Mantion/grab key"] = struct{}{}
+	}
+	mainpath5.Commands["exit"] = func(s *state) {
+		fmt.Println("You leave.")
+		
+	}
+	mainpath5.Commands["back"] = func(s *state) {
+		fmt.Println("You go back")
+		s.room = mainPath3
+	}
+	mainpath5.Commands["left"] = func(s *state) {
+		fmt.Println("You go left")
+		s.room = bRoom
+	}
+	bRoom.Commands["Switch off electromagnet"] = func(s *state) {
+		fmt.Println("You switch off the electromagnet")
+		s.breakerroomused = true
+		s.hiddenCommands["Breaker room/Switch off electromagnet"] = struct{}{}
+	}
+	bRoom.Commands["back"] = func(s *state) {
+		fmt.Println("You go back")
+		s.room = mainpath5
+	}
 	s := &state{
 		room:           startRoom,
 		hiddenCommands: map[string]struct{}{},
@@ -126,6 +158,7 @@ type state struct {
 	electricityon   bool
 	breakerroomused bool
 	rocksFallen     bool
+	keyGot          bool
 	hiddenCommands  map[string]struct{}
 }
 
@@ -253,7 +286,7 @@ var maroom = &room{
 			}
 			return general + " A safe guarded by a sheet of glass. A hammer could be useful."
 		}
-		
+
 		return general + " A pile of rocks with a trapdoor underneeth."
 	},
 }
@@ -281,5 +314,29 @@ var mABRoom = &room{
 		}
 
 		return general + "Pulled"
+	},
+}
+
+var mainpath5 = &room{
+	Title:    "End of path",
+	Commands: map[string]action{},
+	StateDesc: func(s *state) string {
+		general := "You walk along the path and reach a gate. This appears to be your way out. You can turn right."
+		if s.keyGot {
+			delete(s.hiddenCommands, "mainpath5/Exit")
+		}
+		return general
+	},
+}
+
+var bRoom = &room{
+	Title:    "Breaker Room",
+	Commands: map[string]action{},
+	StateDesc: func(s *state) string {
+		general := "You Enter the breaker room and notice a pannel of switches. You see one labed \" Eletromagnet \" ."
+		if !s.breakerroomused {
+			delete(s.hiddenCommands, "Breaker Room/Switch off electromagnet")
+		}
+		return general
 	},
 }
