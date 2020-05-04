@@ -1,5 +1,5 @@
 package main
-
+// TO DO : GLOBAL COMMANDS! SAVE LOAD QUIT.
 import (
 	"bufio"
 	"fmt"
