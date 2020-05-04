@@ -64,9 +64,10 @@ func main() {
 		s.room = mainPath2
 	}
 	mainPath3.Commands["left"] = func(s *state) {
+		s.hiddenCommands["Mansion/grab key"] = struct{}{}
 		fmt.Println("You go left")
 		s.room = maroom
-		s.hiddenCommands["Mantion/Grab key"] = struct{}{}
+		s.hiddenCommands["Mansion/grab key"] = struct{}{}
 	}
 	mainPath3.Commands["right"] = func(s *state) {
 		fmt.Println("You go right")
@@ -108,11 +109,11 @@ func main() {
 	maroom.Commands["grab key"] = func(s *state) {
 		fmt.Println("You grab the key")
 		s.keyGot = true
-		s.hiddenCommands["Mantion/grab key"] = struct{}{}
+		s.hiddenCommands["Mansion/grab key"] = struct{}{}
 	}
 	mainpath5.Commands["exit"] = func(s *state) {
 		fmt.Println("You leave.")
-		
+
 	}
 	mainpath5.Commands["back"] = func(s *state) {
 		fmt.Println("You go back")
@@ -122,10 +123,10 @@ func main() {
 		fmt.Println("You go left")
 		s.room = bRoom
 	}
-	bRoom.Commands["Switch off electromagnet"] = func(s *state) {
+	bRoom.Commands["switch off electromagnet"] = func(s *state) {
 		fmt.Println("You switch off the electromagnet")
 		s.breakerroomused = true
-		s.hiddenCommands["Breaker room/Switch off electromagnet"] = struct{}{}
+		s.hiddenCommands["Breaker room/switch off electromagnet"] = struct{}{}
 	}
 	bRoom.Commands["back"] = func(s *state) {
 		fmt.Println("You go back")
@@ -202,7 +203,7 @@ func getCommands(m map[string]action, s *state) (commands []string) {
 
 var startRoom = &room{
 	Title: "Road",
-	Desc:  "You are standing on a road. You don't know why you are here, and doubt you ever will know. 3 men in a vehicle are chasing you and you come accross a split in the path. You see a long winding path to your left, and an entrance to what seems like a park on your right. The entrence to the park has a metal gate which you can lock, But once you are inside, there seems to be no way out. \n Which direction do you choose?",
+	Desc:  "You are standing on a road. You don't know why you are here, and doubt you ever will know. 3 men in a vehicle are chasing you and you come accross a split in the path. You see a long winding path to your left, and an entrance to what seems like a park on your right. The entrance to the park has a metal gate which you can lock, But once you are inside, there seems to be no way out. \n Which direction do you choose?",
 	Commands: map[string]action{
 		"left": func(s *state) {
 			fmt.Println("\n You turn left.\n ")
@@ -256,11 +257,11 @@ var gTRoom = &room{
 		general := "You Approach the guard tower"
 		if s.electricityon == true && s.breakerroomused == true {
 			delete(s.hiddenCommands, "Guard Tower/pick up safe code")
-			return general + ". The door is unlocked, You enter and find a meatal block on the floor with a safe code sticking out of it"
+			return general + ". The door is unlocked, You enter and find a metal block on the floor with a safe code sticking out of it"
 		}
 		if s.electricityon == true {
 
-			return general + ". The door is unlocked, You enter and find a meatal block on the floor with a safe code sticking out of it. You cannot lift it as an electromagnet has it stuck to the floor"
+			return general + ". The door is unlocked, You enter and find a metal block on the floor with a safe code sticking out of it. You cannot lift it as an electromagnet has it stuck to the floor"
 		}
 
 		return general + ". The Door is locked, it requires electricity to function"
@@ -272,12 +273,12 @@ var mainPath3 = &room{
 	Commands: map[string]action{},
 }
 var maroom = &room{
-	Title:    "Mantion",
+	Title:    "Mansion",
 	Commands: map[string]action{},
 	StateDesc: func(s *state) string {
-		general := "You Enter the mantion and see"
+		general := "You Enter the mansion and see"
 		if s.rocksFallen == true && s.Safecodegot == true && s.hammergot == true {
-			delete(s.hiddenCommands, "Mantion/Grab Key")
+			delete(s.hiddenCommands, "Mansion/grab key")
 			return general + " A key guarded by a safe. You smash the glass, unlock the safe with the code and see a key to the exit"
 		}
 		if s.rocksFallen == true {
@@ -287,7 +288,7 @@ var maroom = &room{
 			return general + " A safe guarded by a sheet of glass. A hammer could be useful."
 		}
 
-		return general + " A pile of rocks with a trapdoor underneeth."
+		return general + " A pile of rocks with a trapdoor underneath."
 	},
 }
 var gRoom = &room{
@@ -296,7 +297,7 @@ var gRoom = &room{
 	StateDesc: func(s *state) string {
 		general := "You enter the room with the power generator, the switch on the wall controlling the power output is set to "
 		if !s.electricityon {
-			delete(s.hiddenCommands, "Generator/Turn on power")
+			delete(s.hiddenCommands, "Generator/turn on power")
 			return general + "Off"
 		}
 
@@ -307,9 +308,9 @@ var mABRoom = &room{
 	Title:    "Basement",
 	Commands: map[string]action{},
 	StateDesc: func(s *state) string {
-		general := "You crawl through the tunnel and reach the basement of the Mantion. There is a lever controlling a trapdoor in the floor above. The lever is "
+		general := "You crawl through the tunnel and reach the basement of the Mansion. There is a lever controlling a trapdoor in the floor above. The lever is "
 		if !s.rocksFallen {
-			delete(s.hiddenCommands, "Basement/Pull lever")
+			delete(s.hiddenCommands, "Basement/pull lever")
 			return general + "Not Pulled"
 		}
 
@@ -322,8 +323,8 @@ var mainpath5 = &room{
 	Commands: map[string]action{},
 	StateDesc: func(s *state) string {
 		general := "You walk along the path and reach a gate. This appears to be your way out. You can turn right."
-		if s.keyGot {
-			delete(s.hiddenCommands, "mainpath5/Exit")
+		if !s.keyGot {
+			delete(s.hiddenCommands, "mainpath5/exit")
 		}
 		return general
 	},
@@ -333,9 +334,9 @@ var bRoom = &room{
 	Title:    "Breaker Room",
 	Commands: map[string]action{},
 	StateDesc: func(s *state) string {
-		general := "You Enter the breaker room and notice a pannel of switches. You see one labed \" Eletromagnet \" ."
+		general := "You Enter the breaker room and notice a panel of switches. You see one labeled \"Electromagnet\" ."
 		if !s.breakerroomused {
-			delete(s.hiddenCommands, "Breaker Room/Switch off electromagnet")
+			delete(s.hiddenCommands, "Breaker Room/switch off electromagnet")
 		}
 		return general
 	},
