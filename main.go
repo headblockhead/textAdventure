@@ -146,6 +146,11 @@ func main() {
 		fmt.Print("> ")
 		text, _ := reader.ReadString('\n')
 		action, ok := s.Room.commands[strings.TrimSpace(text)]
+
+		if strings.TrimSpace(text) == "quit" {
+			fmt.Println("\n You Quit the game.\n ")
+			os.Exit(1)
+		}
 		if ok && !commandIsHidden(strings.TrimSpace(text), s) {
 			s.Movestaken++
 			action(s)
@@ -199,9 +204,11 @@ func commandIsHidden(cmd string, s *state) bool {
 }
 
 func getCommands(m map[string]action, s *state) (commands []string) {
+	commands = append(commands, "quit")
 	for k := range m {
 		if _, ok := s.HiddenCommands[s.Room.Title+"/"+k]; !ok {
 			commands = append(commands, k)
+
 		}
 	}
 	sort.Strings(commands)
@@ -224,14 +231,9 @@ var startRoom = &room{
 }
 
 var leftStartPath = &room{
-	Title: "Left Path",
-	Desc:  " You run as fast as you can along the left path. You notice the group in the car continue approching. You are fast, but not fast enough, the car stops and the men get out. They seem to want to kill you. You cannot escape as they drag you into their van. This is the end for you.\n You died.",
-	commands: map[string]action{
-		"quit": func(s *state) {
-			fmt.Println("\n You Quit the game.\n ")
-			os.Exit(1)
-		},
-	},
+	Title:    "Left Path",
+	Desc:     " You run as fast as you can along the left path. You notice the group in the car continue approching. You are fast, but not fast enough, the car stops and the men get out. They seem to want to kill you. You cannot escape as they drag you into their van. This is the end for you.\n You died.",
+	commands: map[string]action{},
 }
 
 var mainPath0 = &room{
@@ -352,10 +354,6 @@ var titleRoom = &room{
 	Title: "Eddie's Text Adventure",
 	Desc:  "MENU",
 	commands: map[string]action{
-		"quit": func(s *state) {
-			fmt.Println("\n You Quit the game.\n ")
-			os.Exit(1)
-		},
 		"start": func(s *state) {
 			s.Room = startRoom
 		},
