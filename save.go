@@ -6,9 +6,8 @@ import (
 )
 
 func save(s *state) error {
-	f, err := os.Create("savedata.savTada")
+	f, err := os.Create("savedata.ETA")
 	if err != nil {
-		return err
 	}
 	defer f.Close()
 	e := json.NewEncoder(f)

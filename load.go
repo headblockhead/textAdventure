@@ -6,7 +6,7 @@ import (
 )
 
 func load(s *state) (ok bool, err error) {
-	f, err := os.Open("savedata.savTada")
+	f, err := os.Open("savedata.ETA")
 	if err == os.ErrNotExist {
 		err = nil
 		return

@@ -1,6 +1,4 @@
 package main
-
-// TO DO : GLOBAL COMMANDS! SAVE QUIT.
 import (
 	"bufio"
 	"fmt"
@@ -150,7 +148,7 @@ func main() {
 		if strings.TrimSpace(text) == "quit" {
 			fmt.Println("\n You Quit the game.\n ")
 			os.Exit(0)
-		} else if strings.TrimSpace(text) == "save" && s.Room != titleRoom {
+		} else if strings.TrimSpace(text) == "save" && s.Room != titleRoom && s.Room != leftStartPath {
 			fmt.Println("\n You save the game.\n ")
 			save(s)
 		} else if ok && !commandIsHidden(strings.TrimSpace(text), s) {
@@ -214,7 +212,7 @@ func commandIsHidden(cmd string, s *state) bool {
 
 func getCommands(m map[string]action, s *state) (commands []string) {
 	commands = append(commands, "quit")
-	if s.Room != titleRoom {
+	if s.Room != titleRoom && s.Room != leftStartPath {
 		commands = append(commands, "save")
 	}
 	for k := range m {
@@ -229,7 +227,7 @@ func getCommands(m map[string]action, s *state) (commands []string) {
 
 var startRoom = &room{
 	Title: "Road",
-	Desc:  "You are standing on a road. You don't know why you are here, and doubt you ever will know. 3 men in a vehicle are chasing you and you come accross a split in the path. You see a long winding path to your left, and an entrance to what seems like a park on your right. The entrance to the park has a metal gate which you can lock, But once you are inside, there seems to be no way out. \n Which direction do you choose?",
+	Desc:  "You are sprinting over a road. You don't know why you are here, and doubt you ever will know. 3 men in a vehicle are chasing you and you come accross a split in the path. You see a long winding path to your left, and an entrance to what seems like a park on your right. The entrance to the park has a metal gate which you can lock, But once you are inside, there seems to be no way out.",
 	commands: map[string]action{
 		"left": func(s *state) {
 			fmt.Println("\n You turn left.\n ")
@@ -244,13 +242,13 @@ var startRoom = &room{
 
 var leftStartPath = &room{
 	Title:    "Left Path",
-	Desc:     " You run as fast as you can along the left path. You notice the group in the car continue approching. You are fast, but not fast enough, the car stops and the men get out. They seem to want to kill you. You cannot escape as they drag you into their van. This is the end for you.\n You died.",
+	Desc:     " You run as fast as you can along the left path. You notice the group in the car continue approching. You are fast, but not fast enough, the car stops and the men get out. They seem to want to kill you. You cannot escape as they drag you into their vehicle. This is the end for you.\n You died.",
 	commands: map[string]action{},
 }
 
 var mainPath0 = &room{
 	Title:    "Right Path",
-	Desc:     " You run as fast as you can along the right path. You dive into the enclosed space and lock the gate. You're safe for the moment, but you know that they will wait for you to come out, no matter what. It is getting dark now and you pull out your lantern. You look around and see a path to your left, There is also a path forewards.\n Which Direction do you go in?",
+	Desc:     " You run as fast as you can along the right path. You dive into the enclosed space and lock the gate. You're safe for the moment, but you know that they will wait for you to come out from that gate, no matter what. It is getting dark now and you pull out your lantern. You look around and see a path to your left, There is also a path forewards.\n Which Direction do you go in?",
 	commands: map[string]action{},
 }
 var mRoom = &room{
@@ -375,7 +373,7 @@ var titleRoom = &room{
 				fmt.Println(err)
 			}
 			if !ok {
-				fmt.Println("\n No file to load. \n")
+				fmt.Println("\n No file to load.")
 			}
 			if err == nil && ok == true {
 				s.Room = mainPath0
