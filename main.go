@@ -149,15 +149,24 @@ func main() {
 
 		if strings.TrimSpace(text) == "quit" {
 			fmt.Println("\n You Quit the game.\n ")
-			os.Exit(1)
-		}
-		if ok && !commandIsHidden(strings.TrimSpace(text), s) {
+			os.Exit(0)
+		} else if strings.TrimSpace(text) == "save" && s.Room != titleRoom {
+			fmt.Println("\n You save the game.\n ")
+			save(s)
+		} else if ok && !commandIsHidden(strings.TrimSpace(text), s) {
 			s.Movestaken++
 			action(s)
 		} else {
 			fmt.Println()
 			fmt.Println("that is not a valid command!")
 		}
+		//if  condition-1 {
+		//	// code to be executed if condition-1 is true
+		//} else if condition-2 {
+		//	// code to be executed if condition-2 is true
+		//} else {
+		//	// code to be executed if both condition1 and condition2 are false
+		//}
 	}
 }
 
@@ -205,6 +214,9 @@ func commandIsHidden(cmd string, s *state) bool {
 
 func getCommands(m map[string]action, s *state) (commands []string) {
 	commands = append(commands, "quit")
+	if s.Room != titleRoom {
+		commands = append(commands, "save")
+	}
 	for k := range m {
 		if _, ok := s.HiddenCommands[s.Room.Title+"/"+k]; !ok {
 			commands = append(commands, k)
@@ -363,9 +375,12 @@ var titleRoom = &room{
 				fmt.Println(err)
 			}
 			if !ok {
-				fmt.Println("No file to load.")
+				fmt.Println("\n No file to load. \n")
 			}
-			s.Room = mainPath0
+			if err == nil && ok == true {
+				s.Room = mainPath0
+			}
+
 		},
 	},
 }
