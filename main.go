@@ -1,5 +1,6 @@
 package main
-// TO DO : GLOBAL COMMANDS! SAVE LOAD QUIT.
+
+// TO DO : GLOBAL COMMANDS! SAVE QUIT.
 import (
 	"bufio"
 	"fmt"
@@ -25,7 +26,7 @@ func main() {
 		s.Room = mainPath2
 	}
 
-	mRoom.commands["backwards"] = func(s *state) {
+	mRoom.commands["backward"] = func(s *state) {
 		fmt.Println("You Move Back to where you came from")
 		s.Room = mainPath0
 	}
@@ -41,16 +42,16 @@ func main() {
 		s.Room = gTRoom
 	}
 
-	mainPath2.commands["back"] = func(s *state) {
+	mainPath2.commands["backward"] = func(s *state) {
 		fmt.Println("You go back")
 		s.Room = mainPath0
 	}
-	mainPath2.commands["forwards"] = func(s *state) {
+	mainPath2.commands["forward"] = func(s *state) {
 		fmt.Println("You continue walking")
 		s.Room = mainPath3
 	}
 
-	gTRoom.commands["back"] = func(s *state) {
+	gTRoom.commands["backward"] = func(s *state) {
 		fmt.Println("You go back")
 		s.Room = mainPath2
 	}
@@ -59,7 +60,7 @@ func main() {
 		s.Safecodegot = true
 		s.HiddenCommands["Guard Tower/pick up safe code"] = struct{}{}
 	}
-	mainPath3.commands["back"] = func(s *state) {
+	mainPath3.commands["backward"] = func(s *state) {
 		fmt.Println("You go back")
 		s.Room = mainPath2
 	}
@@ -78,11 +79,11 @@ func main() {
 		s.Electricity = true
 		s.HiddenCommands["Generator/turn on power"] = struct{}{}
 	}
-	gRoom.commands["back"] = func(s *state) {
+	gRoom.commands["backward"] = func(s *state) {
 		fmt.Println("You turn back")
 		s.Room = mainPath3
 	}
-	maroom.commands["back"] = func(s *state) {
+	maroom.commands["backward"] = func(s *state) {
 		fmt.Println("You turn back")
 		s.Room = mainPath3
 	}
@@ -96,7 +97,7 @@ func main() {
 		s.RocksFallen = true
 		s.HiddenCommands["Basement/pull lever"] = struct{}{}
 	}
-	mABRoom.commands["back"] = func(s *state) {
+	mABRoom.commands["backward"] = func(s *state) {
 		fmt.Println("You go back to the mausoleum")
 		s.Room = mRoom
 		s.HiddenCommands["Mausoleum/go through tunnel"] = struct{}{}
@@ -113,9 +114,10 @@ func main() {
 	}
 	mainpath5.commands["exit"] = func(s *state) {
 		fmt.Println("You leave.")
+		s.Room = gamefinish
 
 	}
-	mainpath5.commands["back"] = func(s *state) {
+	mainpath5.commands["backward"] = func(s *state) {
 		fmt.Println("You go back")
 		s.Room = mainPath3
 	}
@@ -128,7 +130,7 @@ func main() {
 		s.BreakerRoomUsed = true
 		s.HiddenCommands["Breaker room/switch off electromagnet"] = struct{}{}
 	}
-	bRoom.commands["back"] = func(s *state) {
+	bRoom.commands["backward"] = func(s *state) {
 		fmt.Println("You go back")
 		s.Room = mainpath5
 	}
@@ -363,9 +365,19 @@ var titleRoom = &room{
 				fmt.Println(err)
 			}
 			if !ok {
-				save(s)
-				load(s)
+				fmt.Println("No file to load.")
 			}
+			s.Room = mainPath0
+		},
+	},
+}
+var gamefinish = &room{
+	Title: "Escape",
+	Desc:  "You escape from the place you were in and run from the people in the car. You escape and get home. The end",
+	commands: map[string]action{
+		"Title": func(s *state) {
+			fmt.Println("\n You Go to the title screen.\n ")
+			s.Room = titleRoom
 		},
 	},
 }
