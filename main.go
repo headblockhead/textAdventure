@@ -1,4 +1,5 @@
 package main
+
 import (
 	"bufio"
 	"fmt"
@@ -123,10 +124,10 @@ func main() {
 		fmt.Println("You go left")
 		s.Room = bRoom
 	}
-	bRoom.commands["switch off electromagnet"] = func(s *state) {
+	bRoom.commands["switch off"] = func(s *state) {
 		fmt.Println("You switch off the electromagnet")
 		s.BreakerRoomUsed = true
-		s.HiddenCommands["Breaker room/switch off electromagnet"] = struct{}{}
+		s.HiddenCommands["Breaker Room/switch off"] = struct{}{}
 	}
 	bRoom.commands["backward"] = func(s *state) {
 		fmt.Println("You go back")
@@ -144,7 +145,6 @@ func main() {
 		fmt.Print("> ")
 		text, _ := reader.ReadString('\n')
 		action, ok := s.Room.commands[strings.TrimSpace(text)]
-
 		if strings.TrimSpace(text) == "quit" {
 			fmt.Println("\n You Quit the game.\n ")
 			os.Exit(0)
@@ -156,7 +156,7 @@ func main() {
 			action(s)
 		} else {
 			fmt.Println()
-			fmt.Println("that is not a valid command!")
+			fmt.Println("The command You have entered is not valid")
 		}
 		//if  condition-1 {
 		//	// code to be executed if condition-1 is true
