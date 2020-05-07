@@ -14,19 +14,23 @@ func main() {
 	tm.Clear()
 	tm.MoveCursor(1, 1)
 	tm.Flush()
+
 	mainPath0.commands["left"] = func(s *state) {
 		fmt.Println("You Turn Left")
-		s.Room = mRoom
+		s.room = mRoom
+		s.RoomNo = 4
 		s.HiddenCommands["Mausoleum/go through tunnel"] = struct{}{}
 	}
 	mainPath0.commands["forward"] = func(s *state) {
 		fmt.Println("You Move forward")
-		s.Room = mainPath2
+		s.room = mainPath2
+		s.RoomNo = 7
 	}
 
 	mRoom.commands["backward"] = func(s *state) {
 		fmt.Println("You Move Back to where you came from")
-		s.Room = mainPath0
+		s.room = mainPath0
+		s.RoomNo = 3
 	}
 	mRoom.commands["pick up hammer"] = func(s *state) {
 		fmt.Println("You Pick up the hammer")
@@ -37,21 +41,25 @@ func main() {
 	mainPath2.commands["right"] = func(s *state) {
 		fmt.Println("You Turn Right")
 		s.HiddenCommands["Guard Tower/pick up safe code"] = struct{}{}
-		s.Room = gTRoom
+		s.room = gTRoom
+		s.RoomNo = 5
 	}
 
 	mainPath2.commands["backward"] = func(s *state) {
 		fmt.Println("You go back")
-		s.Room = mainPath0
+		s.room = mainPath0
+		s.RoomNo = 3
 	}
 	mainPath2.commands["forward"] = func(s *state) {
 		fmt.Println("You continue walking")
-		s.Room = mainPath3
+		s.room = mainPath3
+		s.RoomNo = 9
 	}
 
 	gTRoom.commands["backward"] = func(s *state) {
 		fmt.Println("You go back")
-		s.Room = mainPath2
+		s.room = mainPath2
+		s.RoomNo = 7
 	}
 	gTRoom.commands["pick up safe code"] = func(s *state) {
 		fmt.Println("You pick up the safe code")
@@ -60,17 +68,20 @@ func main() {
 	}
 	mainPath3.commands["backward"] = func(s *state) {
 		fmt.Println("You go back")
-		s.Room = mainPath2
+		s.room = mainPath2
+		s.RoomNo = 7
 	}
 	mainPath3.commands["left"] = func(s *state) {
 		s.HiddenCommands["Mansion/grab key"] = struct{}{}
 		fmt.Println("You go left")
-		s.Room = maroom
+		s.room = maroom
+		s.RoomNo = 6
 		s.HiddenCommands["Mansion/grab key"] = struct{}{}
 	}
 	mainPath3.commands["right"] = func(s *state) {
 		fmt.Println("You go right")
-		s.Room = gRoom
+		s.room = gRoom
+		s.RoomNo = 8
 	}
 	gRoom.commands["turn on power"] = func(s *state) {
 		fmt.Println("You turn on the power")
@@ -79,30 +90,36 @@ func main() {
 	}
 	gRoom.commands["backward"] = func(s *state) {
 		fmt.Println("You turn back")
-		s.Room = mainPath3
+		s.room = mainPath3
+		s.RoomNo = 9
 	}
 	maroom.commands["backward"] = func(s *state) {
 		fmt.Println("You turn back")
-		s.Room = mainPath3
+		s.room = mainPath3
+		s.RoomNo = 9
 	}
 	mRoom.commands["go through tunnel"] = func(s *state) {
 		fmt.Println("You go through the tunnel")
-		s.Room = mABRoom
+		s.room = mABRoom
+		s.RoomNo = 14
 	}
 	mABRoom.commands["pull lever"] = func(s *state) {
 		fmt.Println("You pull the lever and rocks fall into a pit in the center of the room")
-		s.Room = mABRoom
+		s.room = mABRoom
+		s.RoomNo = 14
 		s.RocksFallen = true
 		s.HiddenCommands["Basement/pull lever"] = struct{}{}
 	}
 	mABRoom.commands["backward"] = func(s *state) {
 		fmt.Println("You go back to the mausoleum")
-		s.Room = mRoom
+		s.room = mRoom
+		s.RoomNo = 4
 		s.HiddenCommands["Mausoleum/go through tunnel"] = struct{}{}
 	}
 	mainPath3.commands["forward"] = func(s *state) {
 		fmt.Println("You forward")
-		s.Room = mainpath5
+		s.room = mainpath5
+		s.RoomNo = 10
 		s.HiddenCommands["End of path/exit"] = struct{}{}
 	}
 	maroom.commands["grab key"] = func(s *state) {
@@ -112,16 +129,19 @@ func main() {
 	}
 	mainpath5.commands["exit"] = func(s *state) {
 		fmt.Println("You leave.")
-		s.Room = gamefinish
+		s.room = gamefinish
+		s.RoomNo = 12
 
 	}
 	mainpath5.commands["backward"] = func(s *state) {
 		fmt.Println("You go back")
-		s.Room = mainPath3
+		s.room = mainPath3
+		s.RoomNo = 9
 	}
 	mainpath5.commands["left"] = func(s *state) {
 		fmt.Println("You go left")
-		s.Room = bRoom
+		s.room = bRoom
+		s.RoomNo = 11
 	}
 	bRoom.commands["switch off"] = func(s *state) {
 		fmt.Println("You switch off the electromagnet")
@@ -130,24 +150,25 @@ func main() {
 	}
 	bRoom.commands["backward"] = func(s *state) {
 		fmt.Println("You go back")
-		s.Room = mainpath5
+		s.room = mainpath5
+		s.RoomNo = 10
 	}
 	s := &state{
-		Room:           titleRoom,
+		room:           titleRoom,
 		HiddenCommands: map[string]struct{}{},
 		Movestaken:     0,
 	}
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
-		renderRoom(s.Room, s)
+		renderRoom(s.room, s)
 		fmt.Print("> ")
 		text, _ := reader.ReadString('\n')
-		action, ok := s.Room.commands[strings.TrimSpace(text)]
+		action, ok := s.room.commands[strings.TrimSpace(text)]
 		if strings.TrimSpace(text) == "quit" {
 			fmt.Println("\n You Quit the game.\n ")
 			os.Exit(0)
-		} else if strings.TrimSpace(text) == "save" && s.Room != titleRoom && s.Room != leftStartPath {
+		} else if strings.TrimSpace(text) == "save" && s.room != titleRoom && s.room != leftStartPath {
 			fmt.Println("\n You save the game.\n ")
 			save(s)
 		} else if ok && !commandIsHidden(strings.TrimSpace(text), s) {
@@ -169,13 +190,14 @@ func main() {
 
 type state struct {
 	//game_data
-	Room            *room
+	room            *room
 	Hammergot       bool
 	Safecodegot     bool
 	Electricity     bool
 	BreakerRoomUsed bool
 	RocksFallen     bool
 	KeyGot          bool
+	RoomNo          int
 	HiddenCommands  map[string]struct{}
 	//info_data
 	Movestaken int
@@ -205,23 +227,66 @@ func renderRoom(r *room, s *state) {
 }
 
 func commandIsHidden(cmd string, s *state) bool {
-	_, ok := s.HiddenCommands[s.Room.Title+"/"+cmd]
+	_, ok := s.HiddenCommands[s.room.Title+"/"+cmd]
 	return ok
 }
 
 func getCommands(m map[string]action, s *state) (commands []string) {
 	commands = append(commands, "quit")
-	if s.Room != titleRoom && s.Room != leftStartPath {
+	if s.room != titleRoom && s.room != leftStartPath {
 		commands = append(commands, "save")
 	}
 	for k := range m {
-		if _, ok := s.HiddenCommands[s.Room.Title+"/"+k]; !ok {
+		if _, ok := s.HiddenCommands[s.room.Title+"/"+k]; !ok {
 			commands = append(commands, k)
 
 		}
 	}
 	sort.Strings(commands)
 	return
+}
+func getRoomFromR(r int) *room {
+	if r == 1 {
+		var n = startRoom
+		return n
+	} else if r == 2 {
+		var n = leftStartPath
+		return n
+	} else if r == 3 {
+		var n = mainPath0
+		return n
+	} else if r == 4 {
+		var n = mRoom
+		return n
+	} else if r == 5 {
+		var n = gTRoom
+		return n
+	} else if r == 6 {
+		var n = maroom
+		return n
+	} else if r == 7 {
+		var n = mainPath2
+		return n
+	} else if r == 8 {
+		var n = gRoom
+		return n
+	} else if r == 9 {
+		var n = mainPath3
+		return n
+	} else if r == 10 {
+		var n = mainpath5
+		return n
+	} else if r == 11 {
+		var n = bRoom
+		return n
+	} else if r == 12 {
+		var n = gamefinish
+		return n
+	} else if r == 14 {
+		var n = mABRoom
+		return n
+	}
+	return startRoom
 }
 
 var startRoom = &room{
@@ -230,11 +295,13 @@ var startRoom = &room{
 	commands: map[string]action{
 		"left": func(s *state) {
 			fmt.Println("\n You turn left.\n ")
-			s.Room = leftStartPath
+			s.room = leftStartPath
+			s.RoomNo = 2
 		},
 		"right": func(s *state) {
 			fmt.Println("\n You turn right\n ")
-			s.Room = mainPath0
+			s.room = mainPath0
+			s.RoomNo = 3
 		},
 	},
 }
@@ -364,7 +431,8 @@ var titleRoom = &room{
 	Desc:  "MENU",
 	commands: map[string]action{
 		"start": func(s *state) {
-			s.Room = startRoom
+			s.room = startRoom
+			s.RoomNo = 1
 		},
 		"load": func(s *state) {
 			ok, err := load(s)
@@ -375,19 +443,14 @@ var titleRoom = &room{
 				fmt.Println("\n No file to load.")
 			}
 			if err == nil && ok == true {
-				s.Room = mainPath0
+				s.room = getRoomFromR(s.RoomNo)
 			}
 
 		},
 	},
 }
 var gamefinish = &room{
-	Title: "Escape",
-	Desc:  "You escape from the place you were in and run from the people in the car. You escape and get home. The end",
-	commands: map[string]action{
-		"Title": func(s *state) {
-			fmt.Println("\n You Go to the title screen.\n ")
-			s.Room = titleRoom
-		},
-	},
+	Title:    "Escape",
+	Desc:     "You escape from the place you were in and run from the people in the car. You escape and get home. The end",
+	commands: map[string]action{},
 }
