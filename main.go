@@ -6,14 +6,9 @@ import (
 	"os"
 	"sort"
 	"strings"
-
-	tm "github.com/buger/goterm"
 )
 
 func main() {
-	tm.Clear() // Clear current screen
-	tm.MoveCursor(1, 1)
-	tm.Flush()
 
 	mainPath0.commands["left"] = func(s *state) {
 		fmt.Println("You Turn Left")
