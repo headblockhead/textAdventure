@@ -340,7 +340,7 @@ var gTRoom = &room{
 	commands: map[string]action{},
 	stateDesc: func(s *state) string {
 		general := "You walk towards the guard tower, the night falling around you, and see that"
-		if s.Electricity == true && s.BreakerRoomUsed == true {
+		if s.Electricity == true && s.BreakerRoomUsed == true && s.Safecodegot == false{
 			delete(s.HiddenCommands, "Guard Tower/pick up safe code")
 			return general + " the door is unlocked, You enter and find a metal block on the floor with a safe code sticking out of it"
 		}
@@ -362,7 +362,7 @@ var maroom = &room{
 	commands: map[string]action{},
 	stateDesc: func(s *state) string {
 		general := "You walk along the short path, observing your surroundings. You notice the distant screams coming from the car that was chasing you. Shivers make their way down your spine as you peek inside the old building. Inside you notice"
-		if s.RocksFallen == true && s.Safecodegot == true && s.Hammergot == true {
+		if s.RocksFallen == true && s.Safecodegot == true && s.Hammergot == true && s.KeyGot == false{
 			delete(s.HiddenCommands, "Mansion/grab key")
 			return general + " a key guarded by a safe. You smash the glass, unlock the safe with the code and see a key to the exit."
 		}
@@ -408,7 +408,7 @@ var mainpath5 = &room{
 	commands: map[string]action{},
 	stateDesc: func(s *state) string {
 		general := "You walk along the path and reach a gate. This appears to be your way out. You can turn right."
-		if !s.KeyGot {
+		if s.KeyGot {
 			delete(s.HiddenCommands, "mainpath5/exit")
 		}
 		return general
