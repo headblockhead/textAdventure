@@ -1,1 +1,1 @@
-{"Hammergot":false,"Safecodegot":false,"Electricity":false,"BreakerRoomUsed":false,"RocksFallen":false,"KeyGot":false,"RoomNo":4,"HiddenCommands":{"Mausoleum/go through tunnel":{}},"Movestaken":5}
+{"Hammergot":true,"Safecodegot":true,"Electricity":true,"BreakerRoomUsed":true,"RocksFallen":true,"KeyGot":true,"RoomNo":10,"HiddenCommands":{"Basement/pull lever":{},"Breaker Room/switch off":{},"End of path/exit":{},"Generator/turn on power":{},"Guard Tower/pick up safe code":{},"Mansion/grab key":{},"Mausoleum/pick up hammer":{}},"Movestaken":29}
