@@ -11,7 +11,13 @@ A simple Text Adventure Written In GO.
 
 ### MacOS
 
-* TUTORIAL COMING SOON
+- Open terminal.app
+- Navigate to the directory where you saved the file:
+  - e.g. `cd ~/Downloads`
+- Enable the file to be executed using the `chmod` command:
+  - `chmod +x Text-Adventure-MacOS`
+- Run the program.
+  - `./Text-Adventure-MacOS`
 
 ### Windows
 
