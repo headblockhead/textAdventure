@@ -407,8 +407,8 @@ var mainpath5 = &room{
 	Title:    "End of path",
 	commands: map[string]action{},
 	stateDesc: func(s *state) string {
-		general := "You walk along the path and reach a gate. This appears to be your way out. You can turn left."
-		if s.KeyGot == true {
+		general := "You walk along the path and reach a gate. This appears to be your way out. You can turn right."
+		if s.KeyGot {
 			delete(s.HiddenCommands, "mainpath5/exit")
 			return general + " You have the key to exit."
 		}
