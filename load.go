@@ -14,7 +14,6 @@ func load(s *state) (ok bool, err error) {
 	reader := bufio.NewReader(os.Stdin)
 	dirname := "."
 	fmt.Println("Choose savefile:")
-
 	f, err := os.Open(dirname)
 	if err != nil {
 		log.Fatal(err)
@@ -30,9 +29,13 @@ func load(s *state) (ok bool, err error) {
 			fmt.Println(file.Name()[0 : len(file.Name())-4])
 		}
 	}
+	fmt.Println("Type \"quit\" to exit")
 	fmt.Print("> ")
 	text, _ := reader.ReadString('\n')
 	var filename = strings.TrimSpace(text) + ".eta"
+	if strings.TrimSpace(text) == "exit"{
+		return
+	}
 	f, err = os.Open(filename)
 	if err == os.ErrNotExist {
 		err = nil
