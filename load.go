@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func load(s *state) (ok bool, err error) {
+func load(s *state) (ok bool, err error, isquit bool) {
 	reader := bufio.NewReader(os.Stdin)
 	dirname := "."
 	fmt.Println("Choose savefile:")
@@ -25,17 +25,19 @@ func load(s *state) (ok bool, err error) {
 	}
 
 	for _, file := range files {
-		if path.Ext(file.Name()) == "eta" {
+		if path.Ext(file.Name()) == "ETA" {
 			fmt.Println(file.Name()[0 : len(file.Name())-4])
 		}
 	}
 	fmt.Println("Type \"quit\" to exit")
 	fmt.Print("> ")
 	text, _ := reader.ReadString('\n')
-	var filename = strings.TrimSpace(text) + ".eta"
 	if strings.TrimSpace(text) == "exit"{
+		isquit = true
 		return
 	}
+	var filename = strings.TrimSpace(text) + ".eta"
+
 	f, err = os.Open(filename)
 	if err == os.ErrNotExist {
 		err = nil
@@ -47,5 +49,5 @@ func load(s *state) (ok bool, err error) {
 	defer f.Close()
 	e := json.NewDecoder(f)
 	err = e.Decode(s)
-	return err == nil, err
+	return err == nil, err, isquit
 }

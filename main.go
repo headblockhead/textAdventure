@@ -11,8 +11,8 @@ import (
 )
 
 func main() {
-	tm.Clear()
-	tm.MoveCursor(1, 1)
+	//tm.Clear()
+	//tm.MoveCursor(1, 1)
 	tm.Flush()
 
 	mainPath0.commands["left"] = func(s *state) {
@@ -120,12 +120,12 @@ func main() {
 		fmt.Println("You forward")
 		s.room = mainpath5
 		s.RoomNo = 10
-		s.HiddenCommands["End of path/exit"] = struct{}{}
 	}
 	maroom.commands["grab key"] = func(s *state) {
 		fmt.Println("You grab the key")
 		s.KeyGot = true
 		s.HiddenCommands["Mansion/grab key"] = struct{}{}
+		delete(s.HiddenCommands, "mainpath5/exit")
 	}
 	mainpath5.commands["exit"] = func(s *state) {
 		fmt.Println("You leave.")
@@ -154,9 +154,11 @@ func main() {
 		s.RoomNo = 10
 	}
 	s := &state{
-		room:           titleRoom,
-		HiddenCommands: map[string]struct{}{},
-		Movestaken:     0,
+		room: titleRoom,
+		HiddenCommands: map[string]struct{}{
+			"End of path/exit": {},
+		},
+		Movestaken: 0,
 	}
 	reader := bufio.NewReader(os.Stdin)
 
@@ -174,6 +176,12 @@ func main() {
 		} else if ok && !commandIsHidden(strings.TrimSpace(text), s) {
 			s.Movestaken++
 			action(s)
+		} else if strings.TrimSpace(text) == "exit" && s.room == mainpath5 {
+			fmt.Println("\n You Exit the area")
+			fmt.Println(gamefinish.Title)
+			fmt.Println()
+			fmt.Println(gamefinish.Desc)
+			os.Exit(0)
 		} else {
 			fmt.Println()
 			fmt.Println("The command You have entered is not valid")
@@ -235,6 +243,9 @@ func getCommands(m map[string]action, s *state) (commands []string) {
 	commands = append(commands, "quit")
 	if s.room != titleRoom && s.room != leftStartPath {
 		commands = append(commands, "save")
+	}
+	if s.room == mainpath5 && s.KeyGot == true {
+		commands = append(commands, "exit")
 	}
 	for k := range m {
 		if _, ok := s.HiddenCommands[s.room.Title+"/"+k]; !ok {
@@ -409,7 +420,6 @@ var mainpath5 = &room{
 	stateDesc: func(s *state) string {
 		general := "You walk along the path and reach a gate. This appears to be your way out. You can turn right."
 		if s.KeyGot {
-			delete(s.HiddenCommands, "mainpath5/exit")
 			return general + " You have the key to exit."
 		}
 		return general
@@ -436,11 +446,11 @@ var titleRoom = &room{
 			s.RoomNo = 1
 		},
 		"load": func(s *state) {
-			ok, err := load(s)
+			ok, err, isquit := load(s)
 			if err != nil {
 				fmt.Println(err)
 			}
-			if !ok {
+			if !ok && isquit != true{
 				fmt.Println("That is not a valid savefile")
 				load(s)
 			}
