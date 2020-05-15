@@ -10,11 +10,8 @@ import (
 	"strings"
 )
 
-func load(s *state) (ok bool, err error, isquit bool) {
-	reader := bufio.NewReader(os.Stdin)
-	dirname := "."
-	fmt.Println("Choose savefile:")
-	f, err := os.Open(dirname)
+func printFiles(dir string) {
+	f, err := os.Open(dir)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -23,31 +20,31 @@ func load(s *state) (ok bool, err error, isquit bool) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	for _, file := range files {
-		if path.Ext(file.Name()) == "ETA" {
+		if path.Ext(file.Name()) == ".ETA" {
 			fmt.Println(file.Name()[0 : len(file.Name())-4])
 		}
 	}
-	fmt.Println("Type \"quit\" to exit")
+}
+
+func load(s *state) (ok bool, isquit bool, err error,) {
+	fmt.Println("Choose savefile:")
+	printFiles(".")
 	fmt.Print("> ")
+	reader := bufio.NewReader(os.Stdin)
 	text, _ := reader.ReadString('\n')
-	if strings.TrimSpace(text) == "exit"{
+	if strings.TrimSpace(text) == "quit" {
 		isquit = true
 		return
 	}
-	var filename = strings.TrimSpace(text) + ".eta"
+	var filename = strings.TrimSpace(text) + ".ETA"
 
-	f, err = os.Open(filename)
-	if err == os.ErrNotExist {
-		err = nil
-		return
-	}
+	f, err := os.Open(filename)
 	if err != nil {
 		return
 	}
 	defer f.Close()
 	e := json.NewDecoder(f)
 	err = e.Decode(s)
-	return err == nil, err, isquit
+	return err == nil, isquit, err
 }

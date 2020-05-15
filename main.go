@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+
 	//tm.Clear()
 	//tm.MoveCursor(1, 1)
 	tm.Flush()
@@ -446,16 +447,20 @@ var titleRoom = &room{
 			s.RoomNo = 1
 		},
 		"load": func(s *state) {
-			ok, err, isquit := load(s)
-			if err != nil {
-				fmt.Println(err)
-			}
-			if !ok && isquit != true{
+			for {
+				ok, isQuit, err := load(s)
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
+				if isQuit {
+					break
+				}
+				if ok {
+					s.room = getRoomFromR(s.RoomNo)
+					break
+				}
 				fmt.Println("That is not a valid savefile")
-				load(s)
-			}
-			if err == nil && ok == true {
-				s.room = getRoomFromR(s.RoomNo)
 			}
 		},
 	},
