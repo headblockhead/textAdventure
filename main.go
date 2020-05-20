@@ -168,16 +168,16 @@ func main() {
 		fmt.Print("> ")
 		text, _ := reader.ReadString('\n')
 		action, ok := s.room.commands[strings.TrimSpace(text)]
-		if strings.TrimSpace(text) == "quit" {
+		if strings.EqualFold(strings.TrimSpace(text), "quit"){
 			fmt.Println("\n You Quit the game.\n ")
 			os.Exit(0)
-		} else if strings.TrimSpace(text) == "save" && s.room != titleRoom && s.room != leftStartPath {
+		} else if strings.EqualFold(strings.TrimSpace(text), "save") && s.room != titleRoom && s.room != leftStartPath {
 			fmt.Println("\n You save the game.\n ")
 			save(s)
 		} else if ok && !commandIsHidden(strings.TrimSpace(text), s) {
 			s.Movestaken++
 			action(s)
-		} else if strings.TrimSpace(text) == "exit" && s.room == mainpath5 {
+		} else if strings.EqualFold(strings.TrimSpace(text), "exit") && s.room == mainpath5 {
 			fmt.Println("\n You Exit the area")
 			fmt.Println(gamefinish.Title)
 			fmt.Println()
