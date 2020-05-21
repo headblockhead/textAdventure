@@ -338,7 +338,7 @@ var mRoom = &room{
 		general := "You turn left and walk along the path towards a building that looks like a mausoleum. You look around yourself and notice graves, all over the floor some with bones still half sticking out. You begin to wonder what you got yourself into as you approach the Mausoleum.\n"
 		if s.Hammergot == true {
 			delete(s.HiddenCommands, "Mausoleum/go through tunnel")
-			return general + "There used to be a hammer on the floor, but you picked it up. There is also now a tunnel that you can go through."
+			return general + "There used to be a hammer on the floor, but you picked it up. A tunnel opened when you removed the hammer."
 		}
 
 		return general + "There is a hammer on the floor."
