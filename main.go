@@ -368,7 +368,7 @@ var gTRoom = &room{
 }
 var mainPath3 = &room{
 	Title:    "Path",
-	Desc:     "You walk to the next intersection on the path and look around yourself. You look to your left and see an abandoned mansion, covered in winding vines. To your left you see a small house, Presumably where the generator is kept.",
+	Desc:     "You walk to the next intersection on the path and look around yourself. You look to your left and see an abandoned mansion, covered in winding vines. To your right you see a small house, Presumably where the generator is kept.",
 	commands: map[string]action{},
 }
 var maroom = &room{
@@ -421,7 +421,7 @@ var mainpath5 = &room{
 	Title:    "End of path",
 	commands: map[string]action{},
 	stateDesc: func(s *state) string {
-		general := "You walk along the path and reach a gate. This appears to be your way out. You can turn right."
+		general := "You walk along the path and reach a gate. This appears to be your way out. You can turn left."
 		if s.KeyGot {
 			return general + " You have the key to exit."
 		}
@@ -462,7 +462,7 @@ var titleRoom = &room{
 					s.room = getRoomFromR(s.RoomNo)
 					break
 				}
-				fmt.Println("That is not a valid savefile")
+				fmt.Println("That is not a valid savefile please try another one")
 			}
 		},
 	},

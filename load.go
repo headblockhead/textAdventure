@@ -9,6 +9,7 @@ import (
 	"path"
 	"strings"
 )
+
 //PrintFiles read files in the selected directory that end with .ETA
 func PrintFiles(dir string) {
 	f, err := os.Open(dir)
@@ -27,13 +28,14 @@ func PrintFiles(dir string) {
 	}
 }
 
-func load(s *state) (ok bool, isquit bool, err error,) {
+func load(s *state) (ok bool, isquit bool, err error) {
 	fmt.Println("Choose savefile:")
 	PrintFiles(".")
+	fmt.Println("Type \"quit\" to go back to the menu")
 	fmt.Print("> ")
 	reader := bufio.NewReader(os.Stdin)
 	text, _ := reader.ReadString('\n')
-	if strings.TrimSpace(text) == "quit" {
+	if strings.EqualFold(strings.TrimSpace(text), "quit") {
 		isquit = true
 		return
 	}
