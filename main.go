@@ -6,6 +6,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"time"
 
 	tm "github.com/buger/goterm"
 )
@@ -168,7 +169,7 @@ func main() {
 		fmt.Print("> ")
 		text, _ := reader.ReadString('\n')
 		action, ok := s.room.commands[strings.TrimSpace(text)]
-		if strings.EqualFold(strings.TrimSpace(text), "quit"){
+		if strings.EqualFold(strings.TrimSpace(text), "quit") {
 			fmt.Println("\n You Quit the game.\n ")
 			os.Exit(0)
 		} else if strings.EqualFold(strings.TrimSpace(text), "save") && s.room != titleRoom && s.room != leftStartPath {
@@ -182,6 +183,7 @@ func main() {
 			fmt.Println(gamefinish.Title)
 			fmt.Println()
 			fmt.Println(gamefinish.Desc)
+			time.Sleep(10 * time.Second)
 			os.Exit(0)
 		} else {
 			fmt.Println()

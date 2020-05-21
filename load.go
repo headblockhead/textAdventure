@@ -9,8 +9,8 @@ import (
 	"path"
 	"strings"
 )
-
-func printFiles(dir string) {
+//PrintFiles read files in the selected directory that end with .ETA
+func PrintFiles(dir string) {
 	f, err := os.Open(dir)
 	if err != nil {
 		log.Fatal(err)
@@ -29,7 +29,7 @@ func printFiles(dir string) {
 
 func load(s *state) (ok bool, isquit bool, err error,) {
 	fmt.Println("Choose savefile:")
-	printFiles(".")
+	PrintFiles(".")
 	fmt.Print("> ")
 	reader := bufio.NewReader(os.Stdin)
 	text, _ := reader.ReadString('\n')
