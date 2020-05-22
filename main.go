@@ -196,6 +196,7 @@ func main() {
 			Cls()
 			save(s)
 			fmt.Println("\n You save the game.\n ")
+			Cls()
 		} else if ok && !commandIsHidden(strings.TrimSpace(text), s) {
 			s.Movestaken++
 			action(s)

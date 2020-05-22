@@ -10,6 +10,7 @@ import (
 
 func save(s *state) error {
 start:
+	Cls()
 	fmt.Println("Enter the name of the savefile you want to save the game into (existing saves will be overwritten if selected)")
 	fmt.Println("Existing saves:")
 	PrintFiles(".")

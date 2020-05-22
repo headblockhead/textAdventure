@@ -29,6 +29,7 @@ func PrintFiles(dir string) {
 }
 
 func load(s *state) (ok bool, isquit bool, err error) {
+Cls()
 	fmt.Println("Choose savefile:")
 	PrintFiles(".")
 	fmt.Println("Type \"quit\" to go back to the menu")
@@ -37,6 +38,7 @@ func load(s *state) (ok bool, isquit bool, err error) {
 	text, _ := reader.ReadString('\n')
 	if strings.EqualFold(strings.TrimSpace(text), "quit") {
 		isquit = true
+		Cls()
 		return
 	}
 	var filename = strings.TrimSpace(text) + ".ETA"
