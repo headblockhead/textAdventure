@@ -4,18 +4,17 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"sort"
 	"strings"
 	"time"
-
-	tm "github.com/buger/goterm"
 )
 
 func main() {
-
-	//tm.Clear()
-	//tm.MoveCursor(1, 1)
-	tm.Flush()
+	fmt.Println("\033[2J")
+	cmd := exec.Command("cmd", "/c", "cls")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
 
 	mainPath0.commands["left"] = func(s *state) {
 		fmt.Println("You Turn Left")
