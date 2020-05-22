@@ -12,29 +12,34 @@ import (
 func main() {
 	Cls()
 	mainPath0.commands["left"] = func(s *state) {
+		Cls()
 		fmt.Println("You Turn Left")
 		s.room = mRoom
 		s.RoomNo = 4
 		s.HiddenCommands["Mausoleum/go through tunnel"] = struct{}{}
 	}
 	mainPath0.commands["forward"] = func(s *state) {
+		Cls()
 		fmt.Println("You Move forward")
 		s.room = mainPath2
 		s.RoomNo = 7
 	}
 
 	mRoom.commands["backward"] = func(s *state) {
+		Cls()
 		fmt.Println("You Move Back to where you came from")
 		s.room = mainPath0
 		s.RoomNo = 3
 	}
 	mRoom.commands["pick up hammer"] = func(s *state) {
+		Cls()
 		fmt.Println("You Pick up the hammer")
 		s.Hammergot = true
 		s.HiddenCommands["Mausoleum/pick up hammer"] = struct{}{}
 	}
 
 	mainPath2.commands["right"] = func(s *state) {
+		Cls()
 		fmt.Println("You Turn Right")
 		s.HiddenCommands["Guard Tower/pick up safe code"] = struct{}{}
 		s.room = gTRoom
@@ -42,32 +47,38 @@ func main() {
 	}
 
 	mainPath2.commands["backward"] = func(s *state) {
+		Cls()
 		fmt.Println("You go back")
 		s.room = mainPath0
 		s.RoomNo = 3
 	}
 	mainPath2.commands["forward"] = func(s *state) {
+		Cls()
 		fmt.Println("You continue walking")
 		s.room = mainPath3
 		s.RoomNo = 9
 	}
 
 	gTRoom.commands["backward"] = func(s *state) {
+		Cls()
 		fmt.Println("You go back")
 		s.room = mainPath2
 		s.RoomNo = 7
 	}
 	gTRoom.commands["pick up safe code"] = func(s *state) {
+		Cls()
 		fmt.Println("You pick up the safe code")
 		s.Safecodegot = true
 		s.HiddenCommands["Guard Tower/pick up safe code"] = struct{}{}
 	}
 	mainPath3.commands["backward"] = func(s *state) {
+		Cls()
 		fmt.Println("You go back")
 		s.room = mainPath2
 		s.RoomNo = 7
 	}
 	mainPath3.commands["left"] = func(s *state) {
+		Cls()
 		s.HiddenCommands["Mansion/grab key"] = struct{}{}
 		fmt.Println("You go left")
 		s.room = maroom
@@ -75,31 +86,37 @@ func main() {
 		s.HiddenCommands["Mansion/grab key"] = struct{}{}
 	}
 	mainPath3.commands["right"] = func(s *state) {
+		Cls()
 		fmt.Println("You go right")
 		s.room = gRoom
 		s.RoomNo = 8
 	}
 	gRoom.commands["turn on power"] = func(s *state) {
+		Cls()
 		fmt.Println("You turn on the power")
 		s.Electricity = true
 		s.HiddenCommands["Generator/turn on power"] = struct{}{}
 	}
 	gRoom.commands["backward"] = func(s *state) {
+		Cls()
 		fmt.Println("You turn back")
 		s.room = mainPath3
 		s.RoomNo = 9
 	}
 	maroom.commands["backward"] = func(s *state) {
+		Cls()
 		fmt.Println("You turn back")
 		s.room = mainPath3
 		s.RoomNo = 9
 	}
 	mRoom.commands["go through tunnel"] = func(s *state) {
+		Cls()
 		fmt.Println("You go through the tunnel")
 		s.room = mABRoom
 		s.RoomNo = 14
 	}
 	mABRoom.commands["pull lever"] = func(s *state) {
+		Cls()
 		fmt.Println("You pull the lever and rocks fall into a pit in the center of the room")
 		s.room = mABRoom
 		s.RoomNo = 14
@@ -107,44 +124,52 @@ func main() {
 		s.HiddenCommands["Basement/pull lever"] = struct{}{}
 	}
 	mABRoom.commands["backward"] = func(s *state) {
+		Cls()
 		fmt.Println("You go back to the mausoleum")
 		s.room = mRoom
 		s.RoomNo = 4
 		s.HiddenCommands["Mausoleum/go through tunnel"] = struct{}{}
 	}
 	mainPath3.commands["forward"] = func(s *state) {
+		Cls()
 		fmt.Println("You forward")
 		s.room = mainpath5
 		s.RoomNo = 10
 	}
 	maroom.commands["grab key"] = func(s *state) {
+		Cls()
 		fmt.Println("You grab the key")
 		s.KeyGot = true
 		s.HiddenCommands["Mansion/grab key"] = struct{}{}
 		delete(s.HiddenCommands, "mainpath5/exit")
 	}
 	mainpath5.commands["exit"] = func(s *state) {
+		Cls()
 		fmt.Println("You leave.")
 		s.room = gamefinish
 		s.RoomNo = 12
 
 	}
 	mainpath5.commands["backward"] = func(s *state) {
+		Cls()
 		fmt.Println("You go back")
 		s.room = mainPath3
 		s.RoomNo = 9
 	}
 	mainpath5.commands["left"] = func(s *state) {
+		Cls()
 		fmt.Println("You go left")
 		s.room = bRoom
 		s.RoomNo = 11
 	}
 	bRoom.commands["switch off"] = func(s *state) {
+		Cls()
 		fmt.Println("You switch off the electromagnet")
 		s.BreakerRoomUsed = true
 		s.HiddenCommands["Breaker Room/switch off"] = struct{}{}
 	}
 	bRoom.commands["backward"] = func(s *state) {
+		Cls()
 		fmt.Println("You go back")
 		s.room = mainpath5
 		s.RoomNo = 10
@@ -159,17 +184,18 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
-		Cls()
 		renderRoom(s.room, s)
 		fmt.Print("> ")
 		text, _ := reader.ReadString('\n')
 		action, ok := s.room.commands[strings.TrimSpace(text)]
 		if strings.EqualFold(strings.TrimSpace(text), "quit") {
+			Cls()
 			fmt.Println("\n You Quit the game.\n ")
 			os.Exit(0)
 		} else if strings.EqualFold(strings.TrimSpace(text), "save") && s.room != titleRoom && s.room != leftStartPath {
-			fmt.Println("\n You save the game.\n ")
+			Cls()
 			save(s)
+			fmt.Println("\n You save the game.\n ")
 		} else if ok && !commandIsHidden(strings.TrimSpace(text), s) {
 			s.Movestaken++
 			action(s)
@@ -303,11 +329,13 @@ var startRoom = &room{
 	Desc:  "You are running on a road. You don't know why you are here, and doubt you ever will know. 3 men in a vehicle are chasing you and you come accross a split in the path. You see a long winding path to your left, and an entrance to what seems like an abandoned graveyard on your right. The entrance to the graveyard has a metal gate which you can lock, But once you are inside, there seems to be no way out.",
 	commands: map[string]action{
 		"left": func(s *state) {
+			Cls()
 			fmt.Println("\n You turn left.\n ")
 			s.room = leftStartPath
 			s.RoomNo = 2
 		},
 		"right": func(s *state) {
+			Cls()
 			fmt.Println("\n You turn right\n ")
 			s.room = mainPath0
 			s.RoomNo = 3
@@ -353,9 +381,11 @@ var gTRoom = &room{
 			delete(s.HiddenCommands, "Guard Tower/pick up safe code")
 			return general + " the door is unlocked, You enter and find a metal block on the floor with a safe code sticking out of it."
 		}
-		if s.Electricity == true {
+		if s.Electricity == true && s.Safecodegot == false {
 
 			return general + " the door is unlocked, You enter and find a metal block on the floor with a safe code sticking out of it. You cannot lift it as an electromagnet has it stuck to the floor."
+		} else if s.Safecodegot == true {
+			return general + " the door is unlocked, You enter and find a metal block on the floor the safe code that was once here is now gone"
 		}
 
 		return general + " the door is locked, it has an electrical lock that (Suprise Surprise,) requires electricity to function."
@@ -440,10 +470,12 @@ var titleRoom = &room{
 	Desc:  "MENU",
 	commands: map[string]action{
 		"start": func(s *state) {
+			Cls()
 			s.room = startRoom
 			s.RoomNo = 1
 		},
 		"load": func(s *state) {
+			Cls()
 			for {
 				ok, isQuit, err := load(s)
 				if err != nil {
