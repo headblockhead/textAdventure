@@ -4,18 +4,13 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"os/exec"
 	"sort"
 	"strings"
 	"time"
 )
 
 func main() {
-	fmt.Println("\033[2J")
-	cmd := exec.Command("cmd", "/c", "cls")
-	cmd.Stdout = os.Stdout
-	cmd.Run()
-
+	Cls()
 	mainPath0.commands["left"] = func(s *state) {
 		fmt.Println("You Turn Left")
 		s.room = mRoom
@@ -164,6 +159,7 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
+		Cls()
 		renderRoom(s.room, s)
 		fmt.Print("> ")
 		text, _ := reader.ReadString('\n')
@@ -420,7 +416,7 @@ var mainpath5 = &room{
 	Title:    "End of path",
 	commands: map[string]action{},
 	stateDesc: func(s *state) string {
-		general := "You walk along the path and reach a towering gate labled \"Exit\". This appears to be your way out of the horrific place you trapped yorself in. You can turn left."
+		general := "You walk along the path and reach a towering gate labled \"Exit\". This appears to be your way out of the horrific place you trapped yourself in. You can turn left."
 		if s.KeyGot {
 			return general + " You have the key for the gate."
 		}
@@ -432,7 +428,7 @@ var bRoom = &room{
 	Title:    "Breaker Room",
 	commands: map[string]action{},
 	stateDesc: func(s *state) string {
-		general := "You truge along the path, turning a corner you spy a room. You enter the room and see an array of confusing buttons, dials and switches. It appears to be a breaker room. You a switch labeled \"Electromagnet\"."
+		general := "You trudge along the path, turning a corner you spy a room. You enter the room and see an array of confusing buttons, dials and switches. It appears to be a breaker room. You a switch labeled \"Electromagnet\"."
 		if !s.BreakerRoomUsed {
 			delete(s.HiddenCommands, "Breaker Room/switch off electromagnet")
 		}
