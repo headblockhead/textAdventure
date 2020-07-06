@@ -13,10 +13,6 @@ import (
 func main() {
 
 	Cls()
-	mainPath0.commands["stats"] = func(s *state) {
-		Cls()
-		s.room = stats
-	}
 	mainPath0.commands["left"] = func(s *state) {
 		Cls()
 		fmt.Println("You Turn Left")
@@ -210,8 +206,6 @@ func main() {
 				Cls()
 				fmt.Println("\n You Quit the game.\n ")
 				os.Exit(0)
-			} else {
-				s.room = getRoomFromR(s.RoomNo)
 			}
 		} else if strings.EqualFold(strings.TrimSpace(text), "save") && s.room != titleRoom && s.room != leftStartPath {
 			Cls()
@@ -221,13 +215,18 @@ func main() {
 		} else if ok && !commandIsHidden(strings.TrimSpace(text), s) {
 			s.Movestaken++
 			action(s)
-		} else if strings.EqualFold(strings.TrimSpace(text), "exit") && s.room == mainpath5 {
-			fmt.Println("\n You Exit the area")
+		} else if strings.EqualFold(strings.TrimSpace(text), "escape") && s.room == mainpath5 {
+			fmt.Println("\n You escape the area")
 			fmt.Println(gamefinish.Title)
 			fmt.Println()
 			fmt.Println(gamefinish.Desc)
 			time.Sleep(10 * time.Second)
 			os.Exit(0)
+		} else if strings.EqualFold(strings.TrimSpace(text), "stats") && s.room != titleRoom && s.room != stats {
+			Cls()
+			s.room = stats
+		} else if strings.EqualFold(strings.TrimSpace(text), "go back") && s.room == stats {
+			s.room = getRoomFromR(s.RoomNo)
 		} else {
 			fmt.Println()
 			fmt.Println("The command You have entered is not valid")
@@ -302,7 +301,13 @@ func getCommands(m map[string]action, s *state) (commands []string) {
 		commands = append(commands, "save")
 	}
 	if s.room == mainpath5 && s.KeyGot == true {
-		commands = append(commands, "exit")
+		commands = append(commands, "escape")
+	}
+	if s.room == stats {
+		commands = append(commands, "go back")
+	}
+	if s.room != titleRoom {
+		commands = append(commands, "stats")
 	}
 	for k := range m {
 		if _, ok := s.HiddenCommands[s.room.Title+"/"+k]; !ok {
