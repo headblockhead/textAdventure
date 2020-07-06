@@ -5,12 +5,25 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 )
 
+//Format for the "TIME" variable is HHMMSS
+//TIME + 1 = 1 second
+//TIME + 10 = 10 seconds
+//Time + 100 = 1 minute
+//TIME + 1000 = 10 minutes
+//Time + 10000 = 1 hour
+//Time + 100000 = 10 hours
+
 func main() {
 	Cls()
+	mainPath0.commands["stats"] = func(s *state) {
+		Cls()
+		s.room = stats
+	}
 	mainPath0.commands["left"] = func(s *state) {
 		Cls()
 		fmt.Println("You Turn Left")
@@ -232,8 +245,8 @@ type state struct {
 	KeyGot          bool
 	RoomNo          int
 	HiddenCommands  map[string]struct{}
-	//info_data
-	Movestaken int
+	Movestaken      int
+	Time            int
 }
 
 type action func(s *state)
@@ -499,4 +512,15 @@ var gamefinish = &room{
 	Title:    "Escape",
 	Desc:     "You dash out of the gate and launch yourself from the Graveyard, looking all over for any signs of the shadowy figures. They had not expected you to exit though this way. You sprint to your car and drive away before any of them get wiser. You Win!",
 	commands: map[string]action{},
+}
+var stats = &room{
+	Title:    "Stats",
+	commands: map[string]action{},
+	stateDesc: func(s *state) string {
+		var Info1 = "Moves Taken: "
+		var Info2 = "Time Spent Playing: "
+		var output = Info1 + strconv.Itoa(s.Movestaken)
+		output = output + "\n" + Info2 + strconv.Itoa(s.Time)
+		return output
+	},
 }
