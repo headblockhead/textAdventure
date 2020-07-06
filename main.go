@@ -10,14 +10,6 @@ import (
 	"time"
 )
 
-//Format for the "TIME" variable is HHMMSS
-//TIME + 1 = 1 second
-//TIME + 10 = 10 seconds
-//Time + 100 = 1 minute
-//TIME + 1000 = 10 minutes
-//Time + 10000 = 1 hour
-//Time + 100000 = 10 hours
-
 func main() {
 	Cls()
 	mainPath0.commands["stats"] = func(s *state) {
@@ -196,6 +188,16 @@ func main() {
 	}
 	reader := bufio.NewReader(os.Stdin)
 
+	go func(){
+		time.Sleep(time.Millisecond * 1000)
+		if s.room != titleRoom && s.room != gamefinish {
+			s.Time ++
+		}else {
+			
+		}
+	}()
+
+
 	for {
 		renderRoom(s.room, s)
 		fmt.Print("> ")
@@ -231,6 +233,7 @@ func main() {
 		//} else {
 		//	// code to be executed if both condition1 and condition2 are false
 		//}
+		
 	}
 }
 
@@ -250,6 +253,8 @@ type state struct {
 }
 
 type action func(s *state)
+
+
 
 type room struct {
 	Title     string
