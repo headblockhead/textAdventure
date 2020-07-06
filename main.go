@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+
 	Cls()
 	mainPath0.commands["stats"] = func(s *state) {
 		Cls()
@@ -188,15 +189,16 @@ func main() {
 	}
 	reader := bufio.NewReader(os.Stdin)
 
-	go func(){
-		time.Sleep(time.Millisecond * 1000)
-		if s.room != titleRoom && s.room != gamefinish {
-			s.Time ++
-		}else {
-			
+	go func() {
+		for {
+			time.Sleep(time.Millisecond * 1000)
+			if s.room != titleRoom && s.room != gamefinish && s.room != stats {
+				s.Time++
+			} else if s.room == titleRoom {
+				s.Time = 0
+			}
 		}
 	}()
-
 
 	for {
 		renderRoom(s.room, s)
@@ -204,9 +206,13 @@ func main() {
 		text, _ := reader.ReadString('\n')
 		action, ok := s.room.commands[strings.TrimSpace(text)]
 		if strings.EqualFold(strings.TrimSpace(text), "quit") {
-			Cls()
-			fmt.Println("\n You Quit the game.\n ")
-			os.Exit(0)
+			if s.room != stats {
+				Cls()
+				fmt.Println("\n You Quit the game.\n ")
+				os.Exit(0)
+			} else {
+				s.room = getRoomFromR(s.RoomNo)
+			}
 		} else if strings.EqualFold(strings.TrimSpace(text), "save") && s.room != titleRoom && s.room != leftStartPath {
 			Cls()
 			save(s)
@@ -233,8 +239,18 @@ func main() {
 		//} else {
 		//	// code to be executed if both condition1 and condition2 are false
 		//}
-		
+
 	}
+}
+
+func ftfioi(t int) (ft string) {
+	secs := time.Duration(time.Duration(t) * time.Second)
+	return secs.String()
+	// s := t % 60
+	// if s
+	// m := t / 60
+	// h := m / 60
+	// return strconv.Itoa(h) + ":" + strconv.Itoa(m) + ":" + strconv.Itoa(s)
 }
 
 type state struct {
@@ -253,8 +269,6 @@ type state struct {
 }
 
 type action func(s *state)
-
-
 
 type room struct {
 	Title     string
@@ -525,7 +539,8 @@ var stats = &room{
 		var Info1 = "Moves Taken: "
 		var Info2 = "Time Spent Playing: "
 		var output = Info1 + strconv.Itoa(s.Movestaken)
-		output = output + "\n" + Info2 + strconv.Itoa(s.Time)
+		output = output + "\n" + Info2
+		output = output + ftfioi(s.Time)
 		return output
 	},
 }
