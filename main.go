@@ -13,23 +13,23 @@ import (
 func main() {
 
 	Cls()
-	mainPath0.commands["left"] = func(s *state) {
+	mainPath0.commands["west"] = func(s *state) {
 		Cls()
-		fmt.Println("You Turn Left")
+		fmt.Println("You Turn west")
 		s.room = mRoom
 		s.RoomNo = 4
 		s.HiddenCommands["Mausoleum/go through tunnel"] = struct{}{}
 	}
-	mainPath0.commands["forward"] = func(s *state) {
+	mainPath0.commands["north"] = func(s *state) {
 		Cls()
-		fmt.Println("You Move forward")
+		fmt.Println("You Move north")
 		s.room = mainPath2
 		s.RoomNo = 7
 	}
 
-	mRoom.commands["backward"] = func(s *state) {
+	mRoom.commands["south"] = func(s *state) {
 		Cls()
-		fmt.Println("You Move Back to where you came from")
+		fmt.Println("You go south")
 		s.room = mainPath0
 		s.RoomNo = 3
 	}
@@ -40,30 +40,30 @@ func main() {
 		s.HiddenCommands["Mausoleum/pick up hammer"] = struct{}{}
 	}
 
-	mainPath2.commands["right"] = func(s *state) {
+	mainPath2.commands["east"] = func(s *state) {
 		Cls()
-		fmt.Println("You Turn Right")
+		fmt.Println("You go east")
 		s.HiddenCommands["Guard Tower/pick up safe code"] = struct{}{}
 		s.room = gTRoom
 		s.RoomNo = 5
 	}
 
-	mainPath2.commands["backward"] = func(s *state) {
+	mainPath2.commands["south"] = func(s *state) {
 		Cls()
-		fmt.Println("You go back")
+		fmt.Println("You go south")
 		s.room = mainPath0
 		s.RoomNo = 3
 	}
-	mainPath2.commands["forward"] = func(s *state) {
+	mainPath2.commands["north"] = func(s *state) {
 		Cls()
-		fmt.Println("You continue walking")
+		fmt.Println("You go north")
 		s.room = mainPath3
 		s.RoomNo = 9
 	}
 
-	gTRoom.commands["backward"] = func(s *state) {
+	gTRoom.commands["south"] = func(s *state) {
 		Cls()
-		fmt.Println("You go back")
+		fmt.Println("You go south")
 		s.room = mainPath2
 		s.RoomNo = 7
 	}
@@ -73,23 +73,23 @@ func main() {
 		s.Safecodegot = true
 		s.HiddenCommands["Guard Tower/pick up safe code"] = struct{}{}
 	}
-	mainPath3.commands["backward"] = func(s *state) {
+	mainPath3.commands["south"] = func(s *state) {
 		Cls()
-		fmt.Println("You go back")
+		fmt.Println("You go south")
 		s.room = mainPath2
 		s.RoomNo = 7
 	}
-	mainPath3.commands["left"] = func(s *state) {
+	mainPath3.commands["west"] = func(s *state) {
 		Cls()
 		s.HiddenCommands["Mansion/grab key"] = struct{}{}
-		fmt.Println("You go left")
+		fmt.Println("You go west")
 		s.room = maroom
 		s.RoomNo = 6
 		s.HiddenCommands["Mansion/grab key"] = struct{}{}
 	}
-	mainPath3.commands["right"] = func(s *state) {
+	mainPath3.commands["east"] = func(s *state) {
 		Cls()
-		fmt.Println("You go right")
+		fmt.Println("You go east")
 		s.room = gRoom
 		s.RoomNo = 8
 	}
@@ -99,15 +99,15 @@ func main() {
 		s.Electricity = true
 		s.HiddenCommands["Generator/turn on power"] = struct{}{}
 	}
-	gRoom.commands["backward"] = func(s *state) {
+	gRoom.commands["south"] = func(s *state) {
 		Cls()
-		fmt.Println("You turn back")
+		fmt.Println("You go south")
 		s.room = mainPath3
 		s.RoomNo = 9
 	}
-	maroom.commands["backward"] = func(s *state) {
+	maroom.commands["south"] = func(s *state) {
 		Cls()
-		fmt.Println("You turn back")
+		fmt.Println("You go south")
 		s.room = mainPath3
 		s.RoomNo = 9
 	}
@@ -125,16 +125,16 @@ func main() {
 		s.RocksFallen = true
 		s.HiddenCommands["Basement/pull lever"] = struct{}{}
 	}
-	mABRoom.commands["backward"] = func(s *state) {
+	mABRoom.commands["back"] = func(s *state) {
 		Cls()
 		fmt.Println("You go back to the mausoleum")
 		s.room = mRoom
 		s.RoomNo = 4
 		s.HiddenCommands["Mausoleum/go through tunnel"] = struct{}{}
 	}
-	mainPath3.commands["forward"] = func(s *state) {
+	mainPath3.commands["north"] = func(s *state) {
 		Cls()
-		fmt.Println("You forward")
+		fmt.Println("You go north")
 		s.room = mainpath5
 		s.RoomNo = 10
 	}
@@ -152,15 +152,15 @@ func main() {
 		s.RoomNo = 12
 
 	}
-	mainpath5.commands["backward"] = func(s *state) {
+	mainpath5.commands["south"] = func(s *state) {
 		Cls()
-		fmt.Println("You go back")
+		fmt.Println("You go south")
 		s.room = mainPath3
 		s.RoomNo = 9
 	}
-	mainpath5.commands["left"] = func(s *state) {
+	mainpath5.commands["west"] = func(s *state) {
 		Cls()
-		fmt.Println("You go left")
+		fmt.Println("You go west")
 		s.room = bRoom
 		s.RoomNo = 11
 	}
@@ -170,9 +170,9 @@ func main() {
 		s.BreakerRoomUsed = true
 		s.HiddenCommands["Breaker Room/switch off"] = struct{}{}
 	}
-	bRoom.commands["backward"] = func(s *state) {
+	bRoom.commands["south"] = func(s *state) {
 		Cls()
-		fmt.Println("You go back")
+		fmt.Println("You go south")
 		s.room = mainpath5
 		s.RoomNo = 10
 	}
@@ -245,8 +245,10 @@ func main() {
 func trueOrFalse(b bool) (s string) {
 	if b {
 		return "Yes"
-	} else {
+	}else if !b {
 		return "No"
+	}else{
+		return "ERR"
 	}
 }
 
@@ -374,17 +376,17 @@ func getRoomFromR(r int) *room {
 
 var startRoom = &room{
 	Title: "Road",
-	Desc:  "You are running on a road. You don't know why you are here, and doubt you ever will know. 3 men in a vehicle are chasing you and you come accross a split in the path. You see a long winding path to your left, and an entrance to what seems like an abandoned graveyard on your right. The entrance to the graveyard has a metal gate which you can lock, But once you are inside, there seems to be no way out.",
+	Desc:  "You are running on a road. You don't know why you are here, and doubt you ever will know. 3 men in a vehicle are chasing you and you come accross a split in the path. You see a long winding path to your west, and an entrance to what seems like an abandoned graveyard on your east. The entrance to the graveyard has a metal gate which you can lock, But once you are inside, there seems to be no way out.",
 	commands: map[string]action{
-		"left": func(s *state) {
+		"west": func(s *state) {
 			Cls()
-			fmt.Println("\n You turn left.\n ")
+			fmt.Println("\n You go east.\n ")
 			s.room = leftStartPath
 			s.RoomNo = 2
 		},
-		"right": func(s *state) {
+		"east": func(s *state) {
 			Cls()
-			fmt.Println("\n You turn right\n ")
+			fmt.Println("\n You go east\n ")
 			s.room = mainPath0
 			s.RoomNo = 3
 		},
@@ -392,21 +394,21 @@ var startRoom = &room{
 }
 
 var leftStartPath = &room{
-	Title:    "Left Path",
-	Desc:     " You run as fast as you can along the left path. You notice the group in the car continue approching. You are fast, but not fast enough, the car stops and the men get out. They seem to want to kill you. You cannot escape as they drag you into their vehicle. This is the end for you.\n You died.",
+	Title:    "West Path",
+	Desc:     " You run as fast as you can along the west path. You notice the group in the car continue approching. You are fast, but not fast enough, the car stops and the men get out. They seem to want to kill you. You cannot escape as they drag you into their vehicle. This is the end for you.\n You died.",
 	commands: map[string]action{},
 }
 
 var mainPath0 = &room{
-	Title:    "Right Path",
-	Desc:     " You run as fast as you can along the right path. You dive into the enclosed space and lock the gate. You're safe for the moment, but you know that they will wait for you to come out from that gate, no matter what. It is getting dark now and you pull out your lantern. You look around and see a path to your left, There is also a path forewards.\n Which Direction do you go in?",
+	Title:    "East Path",
+	Desc:     " You run as fast as you can along the east path. You dive into the enclosed space and lock the gate. You're safe for the moment, but you know that they will wait for you to come out from that gate, no matter what. It is getting dark now and you pull out your lantern. You look around and see a path to your west, There is also a path north.\n Which Direction do you go in?",
 	commands: map[string]action{},
 }
 var mRoom = &room{
 	Title:    "Mausoleum",
 	commands: map[string]action{},
 	stateDesc: func(s *state) string {
-		general := "You turn left and walk along the path towards a building that looks like an old mausoleum. You look around yourself and notice graves in the woods some with bones still half sticking out. You begin to wonder what you got yourself into as you enter the Mausoleum.\n"
+		general := "You go west and walk along the path towards a building that looks like an old mausoleum. You look around yourself and notice graves in the woods some with bones still half sticking out. You begin to wonder what you got yourself into as you enter the Mausoleum.\n"
 		if s.Hammergot == true {
 			delete(s.HiddenCommands, "Mausoleum/go through tunnel")
 			return general + "There used to be a hammer on the floor, but you picked it up. A trapdoor opened when you removed the hammer."
@@ -417,7 +419,7 @@ var mRoom = &room{
 }
 var mainPath2 = &room{
 	Title:    "Path",
-	Desc:     "You walk to the next intersection on the path and notice a guard tower to your right. It streaches far into the sky but has no window. You can continue walking forward, or take the path to your right.",
+	Desc:     "You walk to the next intersection on the path and notice a guard tower to your east. It streaches far into the sky but has no window. You can continue walking north, or take the path towards it.",
 	commands: map[string]action{},
 }
 var gTRoom = &room{
@@ -441,7 +443,7 @@ var gTRoom = &room{
 }
 var mainPath3 = &room{
 	Title:    "Path",
-	Desc:     "You walk to the next intersection on the path and look around. You look to your left and see an abandoned mansion, covered in winding vines. To your right you see a small house, Presumably where the generator is kept.",
+	Desc:     "You walk to the next intersection on the path and look around. You look to your west and see an abandoned mansion, covered in winding vines. To your west you see a small house, Presumably where the generator is kept.",
 	commands: map[string]action{},
 }
 var maroom = &room{
@@ -494,7 +496,7 @@ var mainpath5 = &room{
 	Title:    "End of path",
 	commands: map[string]action{},
 	stateDesc: func(s *state) string {
-		general := "You walk along the path and reach a towering gate labled \"Exit\". This appears to be your way out of the horrific place you trapped yourself in. You can turn left."
+		general := "You walk along the path and reach a towering gate labled \"Exit\". This appears to be your way out of the horrific place you trapped yourself in. You can turn west."
 		if s.KeyGot {
 			return general + " You have the key for the gate."
 		}
