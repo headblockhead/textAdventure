@@ -242,6 +242,14 @@ func main() {
 	}
 }
 
+func trueOrFalse(b bool) (s string) {
+	if b {
+		return "Yes"
+	} else {
+		return "No"
+	}
+}
+
 func ftfioi(t int) (ft string) {
 	secs := time.Duration(time.Duration(t) * time.Second)
 	return secs.String()
@@ -296,7 +304,9 @@ func commandIsHidden(cmd string, s *state) bool {
 }
 
 func getCommands(m map[string]action, s *state) (commands []string) {
-	commands = append(commands, "quit")
+	if s.room != stats {
+		commands = append(commands, "quit")
+	}
 	if s.room != titleRoom && s.room != leftStartPath {
 		commands = append(commands, "save")
 	}

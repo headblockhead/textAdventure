@@ -2,7 +2,7 @@
 
 A simple Text Adventure Written In GO.
 
-## Running the Program
+## Runing the Program
 
 ### Linux
 
@@ -12,7 +12,7 @@ A simple Text Adventure Written In GO.
 ### MacOS
 
 - Open terminal.app
-- Navigate to the directory where you saved the file(```cd path/to/file```)
+- Navigate to the directory where you saved the file (```cd path/to/file```)
 - Enable the file to be executed using the `chmod` command (`chmod +x text-adventure-macos`)
 - Run the program. (`./text-adventure-macos`)
 
@@ -20,4 +20,22 @@ A simple Text Adventure Written In GO.
 
 - Simply run the executable (.exe) file by double-clicking on it in file explorer or use the terminal (`CD path/to/file` then `text-adventure-Windows.exe`)
 
-## 
+## Playing the Game
+
+### Controls
+
+- To execute a command (Save, Walk north) type in the name of the command and press enter
+
+### UI
+
+- At the top is the last action you took (this will not appear if you just started or loaded a game)
+- Below that is the title of the room you are in
+- Then there is the description of what you see around you
+- Below that is a list of avalible commands
+- And finally the area you type the commands into
+
+### Special commands
+
+- `Quit`  - Quits the game
+- `Save`  - Saves the game
+- `Stats` - Show info about your current game
