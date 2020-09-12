@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 )
-
+//save saves a state in the game to a json formatted "Save" file
 func save(s *state) error {
 start:
 	Cls()
@@ -19,6 +19,7 @@ start:
 	text, _ := reader.ReadString('\n')
 	if strings.EqualFold(strings.TrimSpace(text), "quit") {
 		fmt.Println("That is a reserved name, try a different one.")
+		//the use of goto is simply a way of avoiding all the hassle of writing a while loop
 		goto start
 	}
 	strings.TrimSpace(text)

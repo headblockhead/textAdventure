@@ -11,8 +11,9 @@ import (
 )
 
 func main() {
-
+	//see cls.go for definition
 	Cls()
+	//defines all of the commands for each location (room) in one chunk
 	mainPath0.commands["west"] = func(s *state) {
 		Cls()
 		fmt.Println("You Turn west")
@@ -183,12 +184,14 @@ func main() {
 		},
 		Movestaken: 0,
 	}
+	//creates a reader to read input from the terminal
 	reader := bufio.NewReader(os.Stdin)
 
 	go func() {
 		for {
 			time.Sleep(time.Millisecond * 1000)
-			if s.room != titleRoom && s.room != gamefinish && s.room != stats {
+			//increase time if the game is not paused
+			if s.room != titleRoom && s.room != gamefinish && s.room != stats && s.room != pause{
 				s.Time++
 			} else if s.room == titleRoom {
 				s.Time = 0
@@ -197,8 +200,10 @@ func main() {
 	}()
 
 	for {
+		//renderRoom takes a room and prints the contents to the screen in a user friendly way
 		renderRoom(s.room, s)
 		fmt.Print("> ")
+		//reads terminal input until a new line (enter being pressed)
 		text, _ := reader.ReadString('\n')
 		action, ok := s.room.commands[strings.TrimSpace(text)]
 		if strings.EqualFold(strings.TrimSpace(text), "quit") {
@@ -216,11 +221,14 @@ func main() {
 			s.Movestaken++
 			action(s)
 		} else if strings.EqualFold(strings.TrimSpace(text), "escape") && s.room == mainpath5 {
+			//renders escape message
 			fmt.Println("\n You escape the area")
 			fmt.Println(gamefinish.Title)
 			fmt.Println()
 			fmt.Println(gamefinish.Desc)
+			//exits the program after 10 seconds
 			time.Sleep(10 * time.Second)
+			//exits with an error of 0 (no error)
 			os.Exit(0)
 		} else if strings.EqualFold(strings.TrimSpace(text), "stats") && s.room != titleRoom && s.room != stats  && s.room == pause{
 			Cls()
@@ -233,43 +241,32 @@ func main() {
 		} else if strings.EqualFold(strings.TrimSpace(text), "pause") && s.room != titleRoom  && s.room != pause{
 			s.room = pause
 		}  else {
+			//if the command is not a special command or a standard room command, tell the user
 			Cls()
 			fmt.Println()
 			fmt.Println("The command You have entered is not valid")
 		}
-		//if  condition-1 {
-		//	// code to be executed if condition-1 is true
-		//} else if condition-2 {
-		//	// code to be executed if condition-2 is true
-		//} else {
-		//	// code to be executed if both condition1 and condition2 are false
-		//}
 
 	}
 }
-
+//if the bool is true the return "yes" if false, "no" if true nor false, force quit and print debug info
 func trueOrFalse(b bool) (s string) {
 	if b {
 		return "Yes"
 	} else if !b {
 		return "No"
 	} else {
-		return "ERR"
+		panic(1)
 	}
 }
 
 func ftfioi(t int) (ft string) {
 	secs := time.Duration(time.Duration(t) * time.Second)
 	return secs.String()
-	// s := t % 60
-	// if s
-	// m := t / 60
-	// h := m / 60
-	// return strconv.Itoa(h) + ":" + strconv.Itoa(m) + ":" + strconv.Itoa(s)
 }
 
 type state struct {
-	//game_data
+	//important info to save between playthroughs
 	room            *room
 	Hammergot       bool
 	Safecodegot     bool
@@ -285,13 +282,15 @@ type state struct {
 
 type action func(s *state)
 
+//defines what a room can contain
 type room struct {
 	Title     string
 	Desc      string
 	commands  map[string]action
 	stateDesc func(s *state) string
 }
-
+//renderRoom takes all aspects of a room and prints them to the screen
+// it also prints all available commands from the list of commands output by getCommands()
 func renderRoom(r *room, s *state) {
 	fmt.Println(r.Title)
 	fmt.Println()
@@ -306,11 +305,13 @@ func renderRoom(r *room, s *state) {
 	fmt.Println()
 }
 
+//if a command is in the list of hidden commands, don't show it to the user
 func commandIsHidden(cmd string, s *state) bool {
 	_, ok := s.HiddenCommands[s.room.Title+"/"+cmd]
 	return ok
 }
 
+//gets commands from the room & add special commands if necessary
 func getCommands(m map[string]action, s *state) (commands []string) {
 	if s.room == titleRoom {
 		commands = append(commands, "quit")
@@ -345,6 +346,7 @@ func getCommands(m map[string]action, s *state) (commands []string) {
 	sort.Strings(commands)
 	return
 }
+//takes the room number stored in a save file or the state and sets the room to the appropriate value
 func getRoomFromR(r int) *room {
 	if r == 1 {
 		var n = startRoom
@@ -388,7 +390,7 @@ func getRoomFromR(r int) *room {
 	}
 	return startRoom
 }
-
+//the room where you start
 var startRoom = &room{
 	Title: "Road",
 	Desc:  "You are running on a road. You don't know why you are here, and doubt you ever will know. 3 men in a vehicle are chasing you and you come accross a split in the path. You see a long winding path to your west, and an entrance to what seems like an abandoned graveyard on your east. The entrance to the graveyard has a metal gate which you can lock, But once you are inside, there seems to be no way out.",
@@ -407,18 +409,19 @@ var startRoom = &room{
 		},
 	},
 }
-
+//path to the left of the start
 var leftStartPath = &room{
 	Title:    "West Path",
 	Desc:     " You run as fast as you can along the west path. You notice the group in the car continue approching. You are fast, but not fast enough, the car stops and the men get out. They seem to want to kill you. You cannot escape as they drag you into their vehicle. This is the end for you.\n You died.",
 	commands: map[string]action{},
 }
-
+// the middle path at the first pos
 var mainPath0 = &room{
 	Title:    "East Path",
 	Desc:     " You run as fast as you can along the east path. You dive into the enclosed space and lock the gate. You're safe for the moment, but you know that they will wait for you to come out from that gate, no matter what. It is getting dark now and you pull out your lantern. You look around and see a path to your west, There is also a path north.\n Which Direction do you go in?",
 	commands: map[string]action{},
 }
+//the mausoleum 
 var mRoom = &room{
 	Title:    "Mausoleum",
 	commands: map[string]action{},
@@ -432,11 +435,13 @@ var mRoom = &room{
 		return general + "There is a hammer on the floor."
 	},
 }
+// the middle path at the second pos
 var mainPath2 = &room{
 	Title:    "Path",
-	Desc:     "You walk to the next intersection on the path and notice a guard tower to your east. It streaches far into the sky but has no window. You can continue walking north, or take the path towards it.",
+	Desc:     "You walk to the next intersection on the path and notice a guard tower to your east. It stretches far into the sky but has no window. You can continue walking north, or take the path towards it.",
 	commands: map[string]action{},
 }
+//the guard tower room
 var gTRoom = &room{
 	Title:    "Guard Tower",
 	commands: map[string]action{},
@@ -456,11 +461,13 @@ var gTRoom = &room{
 		return general + " the door is locked, it has an electrical lock that (Suprise Surprise,) requires electricity to function."
 	},
 }
+// the middle path at the third pos
 var mainPath3 = &room{
 	Title:    "Path",
 	Desc:     "You walk to the next intersection on the path and look around. You look to your west and see an abandoned mansion, covered in winding vines. To your west you see a small house, Presumably where the generator is kept.",
 	commands: map[string]action{},
 }
+//the main puzzle room with the emergency key
 var maroom = &room{
 	Title:    "Mansion",
 	commands: map[string]action{},
@@ -480,6 +487,7 @@ var maroom = &room{
 		return general + " a pile of rocks blocking your path."
 	},
 }
+//generator room
 var gRoom = &room{
 	Title:    "Generator",
 	commands: map[string]action{},
@@ -493,6 +501,7 @@ var gRoom = &room{
 		return general + "on."
 	},
 }
+//mansion basement room
 var mABRoom = &room{
 	Title:    "Basement",
 	commands: map[string]action{},
@@ -506,7 +515,7 @@ var mABRoom = &room{
 		return general + "down (flipped)."
 	},
 }
-
+// the middle path at the last pos
 var mainpath5 = &room{
 	Title:    "End of path",
 	commands: map[string]action{},
@@ -518,7 +527,7 @@ var mainpath5 = &room{
 		return general
 	},
 }
-
+//the room contaning the power breakers
 var bRoom = &room{
 	Title:    "Breaker Room",
 	commands: map[string]action{},
@@ -530,6 +539,7 @@ var bRoom = &room{
 		return general
 	},
 }
+// the title screen
 var titleRoom = &room{
 	Title: "Eddie's Text Adventure",
 	Desc:  "MENU",
@@ -554,16 +564,18 @@ var titleRoom = &room{
 					s.room = getRoomFromR(s.RoomNo)
 					break
 				}
-				fmt.Println("That is not a valid savefile please try another one")
+				fmt.Println("That is not a valid savefile, please try another one")
 			}
 		},
 	},
 }
+//the last, inaccessible room, printed outside of the main script after finishing the game
 var gamefinish = &room{
 	Title:    "Escape",
 	Desc:     "You dash out of the gate and launch yourself from the Graveyard, looking all over for any signs of the shadowy figures. They had not expected you to exit though this way. You sprint to your car and drive away before any of them get wiser. You Win!",
 	commands: map[string]action{},
 }
+//shows statistics about the game
 var stats = &room{
 	Title:    "Stats",
 	commands: map[string]action{},
@@ -576,7 +588,7 @@ var stats = &room{
 		return output
 	},
 }
-
+//pause screen
 var pause = &room{
 	Title:    "Pause Menu",
 	commands: map[string]action{},

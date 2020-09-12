@@ -2,7 +2,7 @@
 
 A simple Text Adventure Written In GO.
 
-## Runing the Program
+## Running the Program
 
 ### Linux
 
@@ -24,18 +24,15 @@ A simple Text Adventure Written In GO.
 
 ### Controls
 
-- To execute a command (Save, Walk north) type in the name of the command and press enter
+- To execute a command (Save, north) type in the name of the command and press enter
 
 ### UI
 
 - At the top is the last action you took (this will not appear if you just started or loaded a game)
 - Below that is the title of the room you are in
 - Then there is the description of what you see around you
-- Below that is a list of avalible commands
+- Below that is a list of available commands
 - And finally the area you type the commands into
 
 ### Special commands
 
-- `Quit`  - Quits the game
-- `Save`  - Saves the game
-- `Stats` - Show info about your current game

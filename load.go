@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-//PrintFiles read files in the selected directory that end with .ETA
+//PrintFiles read files in the selected directory that end with .save
 func PrintFiles(dir string) {
 	f, err := os.Open(dir)
 	if err != nil {
@@ -27,7 +27,7 @@ func PrintFiles(dir string) {
 		}
 	}
 }
-
+//load allows users to load a state into the game
 func load(s *state) (ok bool, isquit bool, err error) {
 Cls()
 	fmt.Println("Choose savefile:")
