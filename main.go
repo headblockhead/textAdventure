@@ -208,7 +208,14 @@ func main() {
 		//reads terminal input until a new line (enter being pressed)
 		text, _ := reader.ReadString('\n')
 		action, ok := s.room.commands[strings.TrimSpace(text)]
-		if strings.EqualFold(strings.TrimSpace(text), "quit") {
+		//special commands:
+		if strings.EqualFold(strings.TrimSpace(text), "quit") && s.room == titleRoom {
+			if s.room != stats {
+				Cls()
+				fmt.Println("\n You Quit the game.\n ")
+				os.Exit(0)
+			}
+		} else if strings.EqualFold(strings.TrimSpace(text), "quit") && (s.room == pause || s.room == leftStartPath) {
 			if s.room != stats {
 				Cls()
 				fmt.Println("\n You Quit the game.\n ")
@@ -235,13 +242,22 @@ func main() {
 		} else if strings.EqualFold(strings.TrimSpace(text), "stats") && s.room != titleRoom && s.room != stats && s.room == pause {
 			Cls()
 			s.room = stats
-		} else if strings.EqualFold(strings.TrimSpace(text), "go back") && s.room == stats || s.room == pause {
-			s.room = getRoomFromR(s.RoomNo)
-		} else if strings.EqualFold(strings.TrimSpace(text), "quit to title") && s.room != titleRoom && s.room == pause {
+			s.onpause = false
+		} else if strings.EqualFold(strings.TrimSpace(text), "go back") && (s.room == stats || s.room == pause) {
+			if s.onpause == true {
+				s.onpause = false
+				s.room = getRoomFromR(s.RoomNo)
+			} else {
+				s.room = pause
+				s.onpause = true
+			}
+
+		} else if strings.EqualFold(strings.TrimSpace(text), "quit to title") && s.room == leftStartPath || (s.room != titleRoom && s.room == pause && strings.EqualFold(strings.TrimSpace(text), "quit to title")) {
 			s.room = titleRoom
 			s.RoomNo = 0
-		} else if strings.EqualFold(strings.TrimSpace(text), "pause") && s.room != titleRoom && s.room != pause {
+		} else if strings.EqualFold(strings.TrimSpace(text), "pause") && s.room != titleRoom && s.room != pause && s.room != leftStartPath && s.room != stats {
 			s.room = pause
+			s.onpause = true
 		} else {
 			//if the command is not a special command or a standard room command, tell the user
 			Cls()
@@ -282,6 +298,7 @@ type state struct {
 	Movestaken      int
 	Time            int
 	gateEntered     bool
+	onpause         bool
 }
 
 type action func(s *state)
@@ -324,13 +341,16 @@ func getCommands(m map[string]action, s *state) (commands []string) {
 	if s.room == pause {
 		commands = append(commands, "quit")
 	}
-	if s.room != titleRoom {
+	if s.room == leftStartPath {
+		commands = append(commands, "quit")
+	}
+	if s.room != titleRoom && s.room == pause {
 		commands = append(commands, "save")
 	}
 	if s.room == mainpath5 && s.KeyGot == true {
 		commands = append(commands, "escape")
 	}
-	if s.room == stats {
+	if s.room == stats || s.room == pause {
 		commands = append(commands, "go back")
 	}
 	if s.room != titleRoom && s.room == pause {
@@ -339,7 +359,7 @@ func getCommands(m map[string]action, s *state) (commands []string) {
 	if s.room != titleRoom && s.room == pause {
 		commands = append(commands, "quit to title")
 	}
-	if s.room != titleRoom && s.room != leftStartPath {
+	if s.room != titleRoom && s.room != pause && s.room != leftStartPath {
 		commands = append(commands, "pause")
 	}
 	for k := range m {
