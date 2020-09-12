@@ -16,21 +16,23 @@ func main() {
 	//defines all of the commands for each location (room) in one chunk
 	mainPath0.commands["west"] = func(s *state) {
 		Cls()
-		fmt.Println("You Turn west")
+		fmt.Println("You go west")
 		s.room = mRoom
+		s.gateEntered = true
 		s.RoomNo = 4
 		s.HiddenCommands["Mausoleum/go through tunnel"] = struct{}{}
 	}
 	mainPath0.commands["north"] = func(s *state) {
 		Cls()
 		fmt.Println("You Move north")
+		s.gateEntered = true
 		s.room = mainPath2
 		s.RoomNo = 7
 	}
 
-	mRoom.commands["south"] = func(s *state) {
+	mRoom.commands["east"] = func(s *state) {
 		Cls()
-		fmt.Println("You go south")
+		fmt.Println("You go east")
 		s.room = mainPath0
 		s.RoomNo = 3
 	}
@@ -62,9 +64,9 @@ func main() {
 		s.RoomNo = 9
 	}
 
-	gTRoom.commands["south"] = func(s *state) {
+	gTRoom.commands["west"] = func(s *state) {
 		Cls()
-		fmt.Println("You go south")
+		fmt.Println("You go west")
 		s.room = mainPath2
 		s.RoomNo = 7
 	}
@@ -100,9 +102,9 @@ func main() {
 		s.Electricity = true
 		s.HiddenCommands["Generator/turn on power"] = struct{}{}
 	}
-	gRoom.commands["south"] = func(s *state) {
+	gRoom.commands["west"] = func(s *state) {
 		Cls()
-		fmt.Println("You go south")
+		fmt.Println("You go west")
 		s.room = mainPath3
 		s.RoomNo = 9
 	}
@@ -112,7 +114,7 @@ func main() {
 		s.room = mainPath3
 		s.RoomNo = 9
 	}
-	mRoom.commands["go through tunnel"] = func(s *state) {
+	mRoom.commands["north"] = func(s *state) {
 		Cls()
 		fmt.Println("You go through the tunnel")
 		s.room = mABRoom
@@ -126,7 +128,7 @@ func main() {
 		s.RocksFallen = true
 		s.HiddenCommands["Basement/pull lever"] = struct{}{}
 	}
-	mABRoom.commands["back"] = func(s *state) {
+	mABRoom.commands["south"] = func(s *state) {
 		Cls()
 		fmt.Println("You go back to the mausoleum")
 		s.room = mRoom
@@ -171,9 +173,9 @@ func main() {
 		s.BreakerRoomUsed = true
 		s.HiddenCommands["Breaker Room/switch off"] = struct{}{}
 	}
-	bRoom.commands["south"] = func(s *state) {
+	bRoom.commands["east"] = func(s *state) {
 		Cls()
-		fmt.Println("You go south")
+		fmt.Println("You go east")
 		s.room = mainpath5
 		s.RoomNo = 10
 	}
@@ -191,7 +193,7 @@ func main() {
 		for {
 			time.Sleep(time.Millisecond * 1000)
 			//increase time if the game is not paused
-			if s.room != titleRoom && s.room != gamefinish && s.room != stats && s.room != pause{
+			if s.room != titleRoom && s.room != gamefinish && s.room != stats && s.room != pause {
 				s.Time++
 			} else if s.room == titleRoom {
 				s.Time = 0
@@ -212,7 +214,7 @@ func main() {
 				fmt.Println("\n You Quit the game.\n ")
 				os.Exit(0)
 			}
-		} else if strings.EqualFold(strings.TrimSpace(text), "save") && s.room != titleRoom && s.room != leftStartPath && s.room == pause{
+		} else if strings.EqualFold(strings.TrimSpace(text), "save") && s.room != titleRoom && s.room != leftStartPath && s.room == pause {
 			Cls()
 			save(s)
 			fmt.Println("\n You save the game.\n ")
@@ -230,17 +232,17 @@ func main() {
 			time.Sleep(10 * time.Second)
 			//exits with an error of 0 (no error)
 			os.Exit(0)
-		} else if strings.EqualFold(strings.TrimSpace(text), "stats") && s.room != titleRoom && s.room != stats  && s.room == pause{
+		} else if strings.EqualFold(strings.TrimSpace(text), "stats") && s.room != titleRoom && s.room != stats && s.room == pause {
 			Cls()
 			s.room = stats
-		} else if strings.EqualFold(strings.TrimSpace(text), "go back") && s.room == stats || s.room == pause{
+		} else if strings.EqualFold(strings.TrimSpace(text), "go back") && s.room == stats || s.room == pause {
 			s.room = getRoomFromR(s.RoomNo)
-		} else if strings.EqualFold(strings.TrimSpace(text), "quit to title") && s.room != titleRoom  && s.room == pause{
+		} else if strings.EqualFold(strings.TrimSpace(text), "quit to title") && s.room != titleRoom && s.room == pause {
 			s.room = titleRoom
 			s.RoomNo = 0
-		} else if strings.EqualFold(strings.TrimSpace(text), "pause") && s.room != titleRoom  && s.room != pause{
+		} else if strings.EqualFold(strings.TrimSpace(text), "pause") && s.room != titleRoom && s.room != pause {
 			s.room = pause
-		}  else {
+		} else {
 			//if the command is not a special command or a standard room command, tell the user
 			Cls()
 			fmt.Println()
@@ -249,6 +251,7 @@ func main() {
 
 	}
 }
+
 //if the bool is true the return "yes" if false, "no" if true nor false, force quit and print debug info
 func trueOrFalse(b bool) (s string) {
 	if b {
@@ -278,6 +281,7 @@ type state struct {
 	HiddenCommands  map[string]struct{}
 	Movestaken      int
 	Time            int
+	gateEntered     bool
 }
 
 type action func(s *state)
@@ -289,6 +293,7 @@ type room struct {
 	commands  map[string]action
 	stateDesc func(s *state) string
 }
+
 //renderRoom takes all aspects of a room and prints them to the screen
 // it also prints all available commands from the list of commands output by getCommands()
 func renderRoom(r *room, s *state) {
@@ -319,7 +324,7 @@ func getCommands(m map[string]action, s *state) (commands []string) {
 	if s.room == pause {
 		commands = append(commands, "quit")
 	}
-	if s.room != titleRoom{
+	if s.room != titleRoom {
 		commands = append(commands, "save")
 	}
 	if s.room == mainpath5 && s.KeyGot == true {
@@ -346,6 +351,7 @@ func getCommands(m map[string]action, s *state) (commands []string) {
 	sort.Strings(commands)
 	return
 }
+
 //takes the room number stored in a save file or the state and sets the room to the appropriate value
 func getRoomFromR(r int) *room {
 	if r == 1 {
@@ -390,6 +396,7 @@ func getRoomFromR(r int) *room {
 	}
 	return startRoom
 }
+
 //the room where you start
 var startRoom = &room{
 	Title: "Road",
@@ -404,24 +411,35 @@ var startRoom = &room{
 		"east": func(s *state) {
 			Cls()
 			fmt.Println("\n You go east\n ")
+			s.gateEntered = false
 			s.room = mainPath0
 			s.RoomNo = 3
 		},
 	},
 }
+
 //path to the left of the start
 var leftStartPath = &room{
 	Title:    "West Path",
 	Desc:     " You run as fast as you can along the west path. You notice the group in the car continue approching. You are fast, but not fast enough, the car stops and the men get out. They seem to want to kill you. You cannot escape as they drag you into their vehicle. This is the end for you.\n You died.",
 	commands: map[string]action{},
 }
+
 // the middle path at the first pos
 var mainPath0 = &room{
-	Title:    "East Path",
-	Desc:     " You run as fast as you can along the east path. You dive into the enclosed space and lock the gate. You're safe for the moment, but you know that they will wait for you to come out from that gate, no matter what. It is getting dark now and you pull out your lantern. You look around and see a path to your west, There is also a path north.\n Which Direction do you go in?",
+	Title: "East Path",
+	stateDesc: func(s *state) string {
+		general := " You run as fast as you can along the east path. You dive into the enclosed space and lock the gate. You're safe for the moment, but you know that they will wait for you to come out from that gate, no matter what. It is getting dark now and you pull out your lantern. You look around and see a path to your west, There is also a path north.\n Which Direction do you go in?"
+		general1 := "You look around and see a path to your west, There is also a path north.\n Which Direction do you go in?"
+		if s.gateEntered == true {
+			return general1
+		}
+			return general
+	},
 	commands: map[string]action{},
 }
-//the mausoleum 
+
+//the mausoleum
 var mRoom = &room{
 	Title:    "Mausoleum",
 	commands: map[string]action{},
@@ -435,12 +453,14 @@ var mRoom = &room{
 		return general + "There is a hammer on the floor."
 	},
 }
+
 // the middle path at the second pos
 var mainPath2 = &room{
 	Title:    "Path",
 	Desc:     "You walk to the next intersection on the path and notice a guard tower to your east. It stretches far into the sky but has no window. You can continue walking north, or take the path towards it.",
 	commands: map[string]action{},
 }
+
 //the guard tower room
 var gTRoom = &room{
 	Title:    "Guard Tower",
@@ -461,12 +481,14 @@ var gTRoom = &room{
 		return general + " the door is locked, it has an electrical lock that (Suprise Surprise,) requires electricity to function."
 	},
 }
+
 // the middle path at the third pos
 var mainPath3 = &room{
 	Title:    "Path",
-	Desc:     "You walk to the next intersection on the path and look around. You look to your west and see an abandoned mansion, covered in winding vines. To your west you see a small house, Presumably where the generator is kept.",
+	Desc:     "You walk to the next intersection on the path and look around. You look to your west and see an abandoned mansion, covered in winding vines. To your east you see a small house, Presumably where the generator is kept.",
 	commands: map[string]action{},
 }
+
 //the main puzzle room with the emergency key
 var maroom = &room{
 	Title:    "Mansion",
@@ -487,6 +509,7 @@ var maroom = &room{
 		return general + " a pile of rocks blocking your path."
 	},
 }
+
 //generator room
 var gRoom = &room{
 	Title:    "Generator",
@@ -501,6 +524,7 @@ var gRoom = &room{
 		return general + "on."
 	},
 }
+
 //mansion basement room
 var mABRoom = &room{
 	Title:    "Basement",
@@ -515,6 +539,7 @@ var mABRoom = &room{
 		return general + "down (flipped)."
 	},
 }
+
 // the middle path at the last pos
 var mainpath5 = &room{
 	Title:    "End of path",
@@ -527,6 +552,7 @@ var mainpath5 = &room{
 		return general
 	},
 }
+
 //the room contaning the power breakers
 var bRoom = &room{
 	Title:    "Breaker Room",
@@ -539,6 +565,7 @@ var bRoom = &room{
 		return general
 	},
 }
+
 // the title screen
 var titleRoom = &room{
 	Title: "Eddie's Text Adventure",
@@ -569,12 +596,14 @@ var titleRoom = &room{
 		},
 	},
 }
+
 //the last, inaccessible room, printed outside of the main script after finishing the game
 var gamefinish = &room{
 	Title:    "Escape",
 	Desc:     "You dash out of the gate and launch yourself from the Graveyard, looking all over for any signs of the shadowy figures. They had not expected you to exit though this way. You sprint to your car and drive away before any of them get wiser. You Win!",
 	commands: map[string]action{},
 }
+
 //shows statistics about the game
 var stats = &room{
 	Title:    "Stats",
@@ -588,6 +617,7 @@ var stats = &room{
 		return output
 	},
 }
+
 //pause screen
 var pause = &room{
 	Title:    "Pause Menu",
