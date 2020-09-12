@@ -22,7 +22,7 @@ start:
 		goto start
 	}
 	strings.TrimSpace(text)
-	f, err := os.Create(strings.TrimSpace(text) + ".ETA")
+	f, err := os.Create(strings.TrimSpace(text) + ".save")
 	if err != nil {
 	}
 	defer f.Close()

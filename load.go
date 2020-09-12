@@ -22,7 +22,7 @@ func PrintFiles(dir string) {
 		log.Fatal(err)
 	}
 	for _, file := range files {
-		if path.Ext(file.Name()) == ".ETA" {
+		if path.Ext(file.Name()) == ".save" {
 			fmt.Println(file.Name()[0 : len(file.Name())-4])
 		}
 	}
@@ -41,7 +41,7 @@ Cls()
 		Cls()
 		return
 	}
-	var filename = strings.TrimSpace(text) + ".ETA"
+	var filename = strings.TrimSpace(text) + ".save"
 
 	f, err := os.Open(filename)
 	if err != nil {

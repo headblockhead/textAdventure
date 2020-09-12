@@ -207,7 +207,7 @@ func main() {
 				fmt.Println("\n You Quit the game.\n ")
 				os.Exit(0)
 			}
-		} else if strings.EqualFold(strings.TrimSpace(text), "save") && s.room != titleRoom && s.room != leftStartPath {
+		} else if strings.EqualFold(strings.TrimSpace(text), "save") && s.room != titleRoom && s.room != leftStartPath && s.room == pause{
 			Cls()
 			save(s)
 			fmt.Println("\n You save the game.\n ")
@@ -222,12 +222,18 @@ func main() {
 			fmt.Println(gamefinish.Desc)
 			time.Sleep(10 * time.Second)
 			os.Exit(0)
-		} else if strings.EqualFold(strings.TrimSpace(text), "stats") && s.room != titleRoom && s.room != stats {
+		} else if strings.EqualFold(strings.TrimSpace(text), "stats") && s.room != titleRoom && s.room != stats  && s.room == pause{
 			Cls()
 			s.room = stats
-		} else if strings.EqualFold(strings.TrimSpace(text), "go back") && s.room == stats {
+		} else if strings.EqualFold(strings.TrimSpace(text), "go back") && s.room == stats || s.room == pause{
 			s.room = getRoomFromR(s.RoomNo)
-		} else {
+		} else if strings.EqualFold(strings.TrimSpace(text), "quit to title") && s.room != titleRoom  && s.room == pause{
+			s.room = titleRoom
+			s.RoomNo = 0
+		} else if strings.EqualFold(strings.TrimSpace(text), "pause") && s.room != titleRoom  && s.room != pause{
+			s.room = pause
+		}  else {
+			Cls()
 			fmt.Println()
 			fmt.Println("The command You have entered is not valid")
 		}
@@ -245,9 +251,9 @@ func main() {
 func trueOrFalse(b bool) (s string) {
 	if b {
 		return "Yes"
-	}else if !b {
+	} else if !b {
 		return "No"
-	}else{
+	} else {
 		return "ERR"
 	}
 }
@@ -306,10 +312,13 @@ func commandIsHidden(cmd string, s *state) bool {
 }
 
 func getCommands(m map[string]action, s *state) (commands []string) {
-	if s.room != stats {
+	if s.room == titleRoom {
 		commands = append(commands, "quit")
 	}
-	if s.room != titleRoom && s.room != leftStartPath {
+	if s.room == pause {
+		commands = append(commands, "quit")
+	}
+	if s.room != titleRoom{
 		commands = append(commands, "save")
 	}
 	if s.room == mainpath5 && s.KeyGot == true {
@@ -318,8 +327,14 @@ func getCommands(m map[string]action, s *state) (commands []string) {
 	if s.room == stats {
 		commands = append(commands, "go back")
 	}
-	if s.room != titleRoom {
+	if s.room != titleRoom && s.room == pause {
 		commands = append(commands, "stats")
+	}
+	if s.room != titleRoom && s.room == pause {
+		commands = append(commands, "quit to title")
+	}
+	if s.room != titleRoom && s.room != leftStartPath {
+		commands = append(commands, "pause")
 	}
 	for k := range m {
 		if _, ok := s.HiddenCommands[s.room.Title+"/"+k]; !ok {
@@ -380,7 +395,7 @@ var startRoom = &room{
 	commands: map[string]action{
 		"west": func(s *state) {
 			Cls()
-			fmt.Println("\n You go east.\n ")
+			fmt.Println("\n You go west.\n ")
 			s.room = leftStartPath
 			s.RoomNo = 2
 		},
@@ -558,6 +573,15 @@ var stats = &room{
 		var output = Info1 + strconv.Itoa(s.Movestaken)
 		output = output + "\n" + Info2
 		output = output + ftfioi(s.Time)
+		return output
+	},
+}
+
+var pause = &room{
+	Title:    "Pause Menu",
+	commands: map[string]action{},
+	stateDesc: func(s *state) string {
+		var output = "The Game is paused."
 		return output
 	},
 }
