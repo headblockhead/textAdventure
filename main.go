@@ -306,7 +306,7 @@ func renderRoom(r *room, s *state) {
 	}
 	fmt.Println()
 	fmt.Println("Available Commands:")
-	fmt.Println(strings.Join(getCommands(r.commands, s), "|"))
+	fmt.Println(strings.Join(getCommands(r.commands, s), " | "))
 	fmt.Println()
 }
 
@@ -434,7 +434,7 @@ var mainPath0 = &room{
 		if s.gateEntered == true {
 			return general1
 		}
-			return general
+		return general
 	},
 	commands: map[string]action{},
 }
