@@ -262,7 +262,7 @@ func main() {
 			//if the command is not a special command or a standard room command, tell the user
 			Cls()
 			fmt.Println()
-			fmt.Println("The command You have entered is not valid")
+			fmt.Println("The command You have entered is not a command that is possible!")
 		}
 
 	}
