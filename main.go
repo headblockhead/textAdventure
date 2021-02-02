@@ -146,7 +146,6 @@ func main() {
 		fmt.Println("You grab the key")
 		s.KeyGot = true
 		s.HiddenCommands["Mansion/grab key"] = struct{}{}
-		delete(s.HiddenCommands, "mainpath5/exit")
 	}
 	mainpath5.commands["exit"] = func(s *state) {
 		Cls()
@@ -229,13 +228,13 @@ func main() {
 		} else if ok && !commandIsHidden(strings.TrimSpace(text), s) {
 			s.Movestaken++
 			action(s)
-		} else if strings.EqualFold(strings.TrimSpace(text), "escape") && s.room == mainpath5 {
+		} else if strings.EqualFold(strings.TrimSpace(text), "escape") && s.room == mainpath5 && s.KeyGot{
 			//renders escape message
 			fmt.Println("\n You escape the area")
 			fmt.Println(gamefinish.Title)
 			fmt.Println()
 			fmt.Println(gamefinish.Desc)
-			//exits the program after 10 seconds
+			fmt.Println()
 			time.Sleep(10 * time.Second)
 			//exits with an error of 0 (no error)
 			os.Exit(0)
@@ -279,7 +278,7 @@ func trueOrFalse(b bool) (s string) {
 	}
 }
 
-func ftfioi(t int) (ft string) {
+func formatTime(t int) (ft string) {
 	secs := time.Duration(time.Duration(t) * time.Second)
 	return secs.String()
 }
@@ -420,7 +419,7 @@ func getRoomFromR(r int) *room {
 //the room where you start
 var startRoom = &room{
 	Title: "Road",
-	Desc:  "You are running on a road. You don't know why you are here, and doubt you ever will know. 3 men in a vehicle are chasing you and you come accross a split in the path. You see a long winding path to the west, and an entrance to what seems like an abandoned graveyard to the east. The entrance to the graveyard has a metal gate which you can lock, But once you are inside, there seems to be no way out.\n",
+	Desc:  "You are out for a nice contryside jog when 3 men in a white van start driving aggressively behind you, as if the want to run you over. They are picking up speed. You come accross a split in the path. You see a long winding path to the west, and an entrance to what seems like an abandoned graveyard to the east. The entrance to the graveyard has a metal gate which you can lock behind you that you know they can't get past, But once you are inside, there seems to be no way out. You are facing north.\n",
 	commands: map[string]action{
 		"west": func(s *state) {
 			Cls()
@@ -441,7 +440,7 @@ var startRoom = &room{
 //path to the left of the start
 var leftStartPath = &room{
 	Title:    "West Path",
-	Desc:     " You run as fast as you can along the path going west. You notice the group in the car continue approching. You are fast, but not fast enough, the car stops and the men get out. They seem to want to kill you. You cannot escape as they drag you into their vehicle. \n You died.\n",
+	Desc:     " You continue running, turning towards the path going west. The group in the car continue approching without any signs of stopping. You are fast, but not fast enough. The car stops and the men get out. You cannot escape as they drag you into their vehicle. \nThe End.\n",
 	commands: map[string]action{},
 }
 
@@ -449,8 +448,8 @@ var leftStartPath = &room{
 var mainPath0 = &room{
 	Title: "East Path",
 	stateDesc: func(s *state) string {
-		general := " You run as fast as you can along the path going east. You dive into the enclosed space and lock the gate. You're safe for the moment, but you know that they will wait for you to come out from that gate, no matter what. It is getting dark now and you pull out your lantern. \n You look around and see a path to the west, There is also a path north.\n"
-		general1 := "You look around and see a path going west, There is also a path north."
+		general := " You run as fast as you can going east. You dive in and lock the gate as soon as you make it in. You're safe for the moment, but the men in the van seem like they will wait for you to come out from that gate, no matter what. It is getting dark now and you pull out your emergency torch. \n You look around and see a path west. There is also a path north.\n"
+		general1 := "You see the men, still watching your every move. There is a path going west. There is also a path north."
 		if s.gateEntered == true {
 			s.gateEntered = true
 			return general1
@@ -490,23 +489,23 @@ var gTRoom = &room{
 		general := "You walk towards the guard tower, the night falling around you, and see that"
 		if s.Electricity == true && s.BreakerRoomUsed == true && s.Safecodegot == false {
 			delete(s.HiddenCommands, "Guard Tower/pick up safe code")
-			return general + " the door is unlocked, You enter and find a metal block on the floor with a safe code sticking out of it."
+			return general + " the door is unlocked. You enter and find a metal block on the floor with a safe code sticking out of it."
 		}
 		if s.Electricity == true && s.Safecodegot == false {
 
-			return general + " the door is unlocked, You enter and find a metal block on the floor with a safe code that is currently unreadable sticking out of it. You cannot lift it as an electromagnet has it stuck to the floor."
+			return general + " the door is unlocked. You enter and find a metal block on the floor with a safe code that is currently unreadable sticking out of it. You cannot lift it as an electromagnet has it stuck to the floor."
 		} else if s.Safecodegot == true {
-			return general + " the door is unlocked, You enter and find a metal block on the floor. The safe code that was once here is now gone"
+			return general + " the door is unlocked. You enter and find a metal block on the floor. The safe code that was once here is now gone"
 		}
 
-		return general + " the door is locked, it has a lock that requires electricity to function."
+		return general + " the door is locked, it has a lock that seemingly requires electricity to function."
 	},
 }
 
 // the middle path at the third pos
 var mainPath3 = &room{
 	Title:    "Path",
-	Desc:     "You walk to the next intersection on the path and look around. You look west and see an abandoned mansion, covered in winding vines. To the east you see a small house.",
+	Desc:     "You walk to the next intersection on the path and look around. To the west, a derelict mansion, covered in winding vines. To the east you see a small house.",
 	commands: map[string]action{},
 }
 
@@ -515,19 +514,19 @@ var maroom = &room{
 	Title:    "Mansion",
 	commands: map[string]action{},
 	stateDesc: func(s *state) string {
-		general := "You walk along the short path, observing your surroundings. You notice the distant screams coming from the car that was chasing you. Shivers make their way down your spine as you peek inside the old building. Inside, you notice"
+		general := "You walk along the short path towards the mansion, observing your surroundings. You notice distant screams coming from the car that was chasing you. Shivers make their way down your spine as you peek inside the old building. Inside, you notice"
 		if s.RocksFallen == true && s.Safecodegot == true && s.Hammergot == true && s.KeyGot == false {
 			delete(s.HiddenCommands, "Mansion/grab key")
-			return general + " a key guarded by a safe. You smash the glass, unlock the safe with the code you found and see a key with \"Escape\" written on it."
+			return general + " a key guarded by a safe. You smash the glass with your hammer, unlock the safe with the code you found and see a key with \"Emergency Escape\" written on it."
 		}
 		if s.RocksFallen == true {
 			if s.Hammergot {
-				return general + " a safe guarded by a sheet of glass. You smash the glass using a hammer to reveal a safe that appears to need a code."
+				return general + " a safe guarded by a thick sheet of glass. You smash the glass using your hammer to reveal a safe that appears to need a code."
 			}
-			return general + " a safe needing a code guarded by a sheet of glass."
+			return general + " a safe guarded by a sheet of thick glass."
 		}
 
-		return general + " a pile of rocks that have seemingly fallen from the celling, blocking your path."
+		return general + " a large pile of rocks that have fallen from the celling, blocking your path. There is a dip in the floor where the rocks are, but you don't think much of it."
 	},
 }
 
@@ -536,7 +535,7 @@ var gRoom = &room{
 	Title:    "Generator",
 	commands: map[string]action{},
 	stateDesc: func(s *state) string {
-		general := "You enter the room and comfirm your suspicions, this was a generator room. The generator was labled \"Backup power \" and connected (via a switch) to the rest of the graveyard. The switch is set to "
+		general := "You enter the room. The generator is labled \"Backup power \" and connected (via a switch) to the rest of the graveyard. The switch is set "
 		if !s.Electricity {
 			delete(s.HiddenCommands, "Generator/turn on power")
 			return general + "off."
@@ -551,24 +550,24 @@ var mABRoom = &room{
 	Title:    "Basement",
 	commands: map[string]action{},
 	stateDesc: func(s *state) string {
-		general := "You crawl through the trapdoor and spy a tunnel snaking off past your view. You enter the tunnel and reach the basement of a Mansion. There is a lever seemingly controlling a trapdoor in the floor above. The lever is "
+		general := "You crawl through the trapdoor and spy a tunnel snaking off past your view. You enter the tunnel and reach a basement of some building. There is a lever hooked up to a trapdoor in the floor above. The lever is "
 		if !s.RocksFallen {
 			delete(s.HiddenCommands, "Basement/pull lever")
-			return general + "up (not flipped)."
+			return general + "hanging there, practically begging to be pulled."
 		}
 
-		return general + "down (flipped)."
+		return general + "limp and useless, probably because it had already severed it's purpose long ago."
 	},
 }
 
 // the middle path at the last pos
 var mainpath5 = &room{
-	Title:    "End of path",
+	Title:    "End of the path",
 	commands: map[string]action{},
 	stateDesc: func(s *state) string {
-		general := "You walk along the path and reach a towering gate labled \"Exit\". This appears to be your way out of the horrific place you trapped yourself in. You can turn west."
+		general := "You walk further along the path and reach a towering gate labled \"Emergency Exit.\". This appears to be your way out of the horrific place you trapped yourself in. You can go west."
 		if s.KeyGot {
-			return general + " You have the key for the gate."
+			return general + " You have the key for the gate. Now is your chance!"
 		}
 		return general
 	},
@@ -579,7 +578,7 @@ var bRoom = &room{
 	Title:    "Breaker Room",
 	commands: map[string]action{},
 	stateDesc: func(s *state) string {
-		general := "You trudge along the path, turning a corner you spy a room. You enter the room and see an array of confusing buttons, dials and switches. It appears to be a breaker room. You a switch labeled \"Electromagnet\"."
+		general := "You trudge along the path. Turning a corner, you spy a room. You enter it and see an array of confusing buttons, dials and switches. It appears to be a breaker room. You spot one switch, more brightly colored than the others. You lean over to it and it reads \"Electromagnet\"."
 		if !s.BreakerRoomUsed {
 			delete(s.HiddenCommands, "Breaker Room/switch off electromagnet")
 		}
@@ -612,7 +611,7 @@ var titleRoom = &room{
 					s.room = getRoomFromR(s.RoomNo)
 					break
 				}
-				fmt.Println("That is not a valid savefile, please try another one")
+				fmt.Println("That is not a valid savefile, please try another one!")
 			}
 		},
 	},
@@ -621,7 +620,7 @@ var titleRoom = &room{
 //the last, inaccessible room, printed outside of the main script after finishing the game
 var gamefinish = &room{
 	Title:    "Escape",
-	Desc:     "You dash out of the gate and launch yourself from the Graveyard, looking all over for any signs of the shadowy figures. They had not expected you to exit though this way. You sprint to your car and drive away before any of them get wiser. You Win!",
+	Desc:     "You dash out of the gate and launch yourself from the graveyard, looking all over for any signs of the shadowy figures. They had not expected you to exit though this way. You sprint to your car and drive away before any of them get wiser. You Win!",
 	commands: map[string]action{},
 }
 
@@ -634,7 +633,7 @@ var stats = &room{
 		var Info2 = "Time Spent Playing: "
 		var output = Info1 + strconv.Itoa(s.Movestaken)
 		output = output + "\n" + Info2
-		output = output + ftfioi(s.Time)
+		output = output + formatTime(s.Time)
 		return output
 	},
 }
