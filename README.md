@@ -7,6 +7,7 @@ A simple Text Adventure Written In GO.
 ### Linux
 
 - Open a terminal window and navigate to the folder the file is located in. (```cd path/to/file```)
+- Enable the file to be executed using the `chmod` command (`chmod +x text-adventure-macos`)
 - Launch the program. (``` ./text-adventure-linux ```)
 
 ### MacOS
@@ -34,5 +35,5 @@ A simple Text Adventure Written In GO.
 - Below that is a list of available commands
 - And finally the area you type the commands into
 
-### Special commands
-
+### Building
+- Use "make deploy" to build the program.
