@@ -228,7 +228,7 @@ func main() {
 		} else if ok && !commandIsHidden(strings.TrimSpace(text), s) {
 			s.Movestaken++
 			action(s)
-		} else if strings.EqualFold(strings.TrimSpace(text), "escape") && s.room == mainpath5 && s.KeyGot{
+		} else if strings.EqualFold(strings.TrimSpace(text), "escape") && s.room == mainpath5 && s.KeyGot {
 			//renders escape message
 			fmt.Println("\n You escape the area")
 			fmt.Println(gamefinish.Title)
@@ -588,7 +588,7 @@ var bRoom = &room{
 
 // the title screen
 var titleRoom = &room{
-	Title: "Eddie's Text Adventure",
+	Title: "headblockhead's Text Adventure",
 	Desc:  "MENU",
 	commands: map[string]action{
 		"start": func(s *state) {
