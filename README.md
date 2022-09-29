@@ -1,6 +1,5 @@
 # Text Adventure
-
-A simple Text Adventure Written In GO.
+A simple puzzle based adventure game written in go.
 
 ## Running the Program
 
