@@ -27,25 +27,4 @@ jobs:
         aws-region: eu-west-2
     - name: Copy files to the website with the AWS CLI
       run: |
-        aws s3 sync ./builds ${{ secrets.AWS_S3_BUCKET }}/games/text/builds
-    - name: Send mail
-      uses: dawidd6/action-send-mail@v3
-      with:
-         # Required mail server address:
-        server_address: smtp.gmail.com
-        # Required mail server port:
-        server_port: 465  
-        # Optional (recommended): mail server username:
-        username: ${{secrets.MAIL_USERNAME}}
-        # Optional (recommended) mail server password:
-        password: ${{secrets.MAIL_PASSWORD}}
-       # Required mail subject:
-        subject: Github Actions - Pulbish and build of ${{github.repository}} completed sucsessfully!
-      # Required recipients' addresses:
-        to: ${{secrets.MAIL_USERNAME}}
-      # Required sender full name (address can be skipped):
-        from: headb
-      # Optional whether this connection use TLS (default is true if server_port is 465)
-        secure: true  
-      # Optional plain body:
-        body: Build and Publish job of ${{github.repository}} completed successfully!
+        aws s3 sync ./builds ${{ secrets.AWS_S3_BUCKET }}/textadventure/assets/
