@@ -14,11 +14,11 @@ jobs:
       with:
         go-version: 1.17
     - name: Build for Windows
-      run: GOOS=windows GOARCH=amd64 go build -o builds/Windows.exe
+      run: GOOS=windows GOARCH=amd64 go build -o builds/textadventure-windows.exe
     - name: Build for Mac 
-      run: GOOS=darwin GOARCH=amd64 go build -o builds/Mac
+      run: GOOS=darwin GOARCH=amd64 go build -o builds/textadventure-mac.run
     - name: Build for Linux 
-      run: GOOS=linux GOARCH=amd64 go build -o builds/Linux
+      run: GOOS=linux GOARCH=amd64 go build -o builds/textadventure-linux.run
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
